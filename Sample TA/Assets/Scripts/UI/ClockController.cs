@@ -13,7 +13,7 @@ public class ClockController : MonoBehaviour {
         textDay, 
         textHours, 
         textMinutes, 
-        textPeriods, 
+        //textPeriods, 
         textMonth;
 
     public float 
@@ -56,41 +56,32 @@ public class ClockController : MonoBehaviour {
             minute = 0;
         }
 
-        if (hour >= 12) {
-            if (textPeriods.text == "AM") {
-                textPeriods.text = "PM";
-                GameController.gameController.clock.periods = "PM";
-            } else if (textPeriods.text == "PM") {
-                date++;
-
-                switch (day) {
-                    case "MON":
-                        day = "TUE";
-                        break;
-                    case "TUE":
-                        day = "WED";
-                        break;
-                    case "WED":
-                        day = "THU";
-                        break;
-                    case "THU":
-                        day = "FRI";
-                        break;
-                    case "FRI":
-                        day = "SAT";
-                        break;
-                    case "SAT":
-                        day = "SUN";
-                        break;
-                    case "SUN":
-                        day = "MON";
-                        break;
-                }
-
-                textDay.text = day;
-                textPeriods.text = "AM";
-                GameController.gameController.clock.periods = "AM";
+        if (hour >= 23) {
+            switch (day) {
+                case "SEN":
+                    day = "SEL";
+                    break;
+                case "SEL":
+                    day = "RAB";
+                    break;
+                case "RAB":
+                    day = "KAM";
+                    break;
+                case "KAM":
+                    day = "JUM";
+                    break;
+                case "JUM":
+                    day = "SAB";
+                    break;
+                case "SAB":
+                    day = "MIN";
+                    break;
+                case "MIN":
+                    day = "SEN";
+                    break;
             }
+
+            textDay.text = day;
 
             if (minute >= 0) {
                 hour = 0;
@@ -109,30 +100,30 @@ public class ClockController : MonoBehaviour {
                     month = "APR";
                     break;
                 case "APR":
-                    month = "MAY";
+                    month = "MEI";
                     break;
-                case "MAY":
+                case "MEI":
                     month = "JUN";
                     break;
                 case "JUN":
                     month = "JUL";
                     break;
                 case "JUL":
-                    month = "AUG";
+                    month = "AGU";
                     break;
-                case "AUG":
+                case "AGU":
                     month = "SEP";
                     break;
                 case "SEP":
-                    month = "OCT";
+                    month = "OKT";
                     break;
-                case "OCT":
+                case "OKT":
                     month = "NOV";
                     break;
                 case "NOV":
-                    month = "DEC";
+                    month = "DES";
                     break;
-                case "DEC":
+                case "DES":
                     month = "JAN";
                     break;
             }

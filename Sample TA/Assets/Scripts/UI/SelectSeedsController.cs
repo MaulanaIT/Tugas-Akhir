@@ -17,7 +17,7 @@ public class SelectSeedsController : MonoBehaviour {
         public Sprite[] 
             image;
     }
-    public ListSeeds listSeeds = new ListSeeds();
+    public ListSeeds[] listSeeds;
 
     [System.Serializable]
     public class SlotSeeds {
@@ -48,6 +48,9 @@ public class SelectSeedsController : MonoBehaviour {
     }
     public SelectSeeds selectSeeds = new SelectSeeds();
 
+    public int 
+        indexLocation;
+
     private void Awake() {
         if (selectSeedsController == null) {
             selectSeedsController = this;
@@ -57,7 +60,9 @@ public class SelectSeedsController : MonoBehaviour {
     }
 
     void Start() {
-        slotSeeds.slotChecking = true;
+        CheckingAllSlot();
+
+        indexLocation = PlayerPrefs.GetInt("IndexLocation");
     }
 
     void Update() {
@@ -77,6 +82,16 @@ public class SelectSeedsController : MonoBehaviour {
                 }
             }
 
+            for (int i = 0; i < InventorySeedsController.inventorySeedsController.slotSeeds.maxSeedsSlot; i++) {
+                if (i < InventorySeedsController.inventorySeedsController.slotSeeds.currentSeedsSlot) {
+                    slotSeeds.slotStatus[i] = true;
+
+                    slotSeeds.seedsName[i] = InventorySeedsController.inventorySeedsController.seedsObtained.name[i];
+                } else {
+                    slotSeeds.slotStatus[i] = false;
+                }
+            }
+
             SlotSeedsImageFunction();
 
             slotSeeds.slotChecking = false;
@@ -86,9 +101,9 @@ public class SelectSeedsController : MonoBehaviour {
     //Fungsi cek gambar icon benih
     public void SlotSeedsImageFunction() {
         for (int i = 0; i < slotSeeds.seedsName.Length; i++) {
-            for (int j = 0; j < listSeeds.name.Length; j++) {
-                if (slotSeeds.seedsName[i] == listSeeds.name[j]) {
-                    slotSeeds.slotImage[i].GetComponent<Image>().sprite = listSeeds.image[j];
+            for (int j = 0; j < listSeeds[indexLocation].name.Length; j++) {
+                if (slotSeeds.seedsName[i] == listSeeds[indexLocation].name[j]) {
+                    slotSeeds.slotImage[i].GetComponent<Image>().sprite = listSeeds[indexLocation].image[j];
                     break;
                 }
             }
@@ -101,10 +116,17 @@ public class SelectSeedsController : MonoBehaviour {
 
         if (selectSeeds.currentSlotStatus == true) {
             selectSeeds.selectedSeeds.gameObject.GetComponent<Image>().sprite = slotSeeds.slotImage[numberSlot - 1].sprite;
-            GameController.gameController.nameSelectedSeeds = slotSeeds.seedsName[numberSlot - 1];
+            GameController.gameController.action.nameSelectedSeeds = slotSeeds.seedsName[numberSlot - 1];
         } else if (selectSeeds.currentSlotStatus == false) {
             selectSeeds.selectedSeeds.gameObject.GetComponent<Image>().sprite = slotSeeds.slotDisabled[numberSlot - 1].GetComponent<Image>().sprite;
-            GameController.gameController.nameSelectedSeeds = "Disable";
+            GameController.gameController.action.nameSelectedSeeds = "Disable";
         }
+    }
+
+    public void CheckingAllSlot() {
+        InventorySeedsController.inventorySeedsController.isChecking = true;
+        InventoryToolsController.inventoryToolsController.isChecking = true;
+        InventoryItemController.inventoryItemController.isSlotChecking = true;
+        slotSeeds.slotChecking = true;
     }
 }

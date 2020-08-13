@@ -20,8 +20,7 @@ public class LampController : MonoBehaviour {
     void Update() {
         Transform parent = gameObject.transform;
 
-        if ((GameController.gameController.clock.hours > 3 && GameController.gameController.clock.periods == "PM") ||
-            (GameController.gameController.clock.hours < 7 && GameController.gameController.clock.periods == "AM")) {
+        if (GameController.gameController.clock.hours > 15 || GameController.gameController.clock.hours < 7) {
             if (Math.Abs(gameObject.transform.position.x - player.transform.position.x) <= QualitySettings.shadowDistance &&
             Math.Abs(gameObject.transform.position.z - player.transform.position.z) <= QualitySettings.shadowDistance) {
                 if (isLight == false) {

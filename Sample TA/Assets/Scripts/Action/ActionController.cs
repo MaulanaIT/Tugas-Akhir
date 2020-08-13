@@ -92,6 +92,9 @@ public class ActionController : MonoBehaviour {
     public float 
         cdAction = 0.5f;
 
+    public int 
+        indexLocation;
+
     private void Awake() {
         if (actionController == null) {
             actionController = this;
@@ -105,6 +108,8 @@ public class ActionController : MonoBehaviour {
         conversationFunction.player = GameObject.FindGameObjectWithTag("Player");
 
         anim = playerPoint.GetComponent<Animator>();
+
+        indexLocation = PlayerPrefs.GetInt("IndexLocation");
     }
 
     void Update() {
@@ -124,23 +129,22 @@ public class ActionController : MonoBehaviour {
                     pickUp.itemDialogueBox.SetActive(true);
 
                     pickUp.textItemName.text = pickUp.itemName;
+                    pickUp.itemDialogueBox.SetActive(true);
 
-                    if (isHarvest == true) {
-                        pickUp.itemDialogueBox.SetActive(true);
-                    }
-
-                    isHarvesting = false;
-                    isHarvest = false;
                     actionDuration.sliderDuration.value = 0;
 
                     anim.SetBool("Harvesting", false);
                     anim.SetBool("Idle", true);
 
-                    cdAction -= Time.deltaTime;
+                    isHarvesting = false;
+                    isHarvest = false;
 
-                    if (cdAction <= 0) {
-                        cdAction = 0.5f;
-                        isAction = false;
+                    //Fungsi kondisi memenuhi quest
+                    for (int i = 0; i < QuestController.questController.quest[indexLocation].questItem.Length; i++) {
+                        if (pickUp.itemName == QuestController.questController.quest[indexLocation].questItem[i]) {
+                            QuestController.questController.quest[indexLocation].questProgress[i]++;
+                            break;
+                        }
                     }
                 }
             } else if (isDigging == true) {
@@ -157,45 +161,37 @@ public class ActionController : MonoBehaviour {
 
                     GameObject obj = Instantiate(prefebDigObject, new Vector3(xPosition, 1.517f, zPosition), Quaternion.identity);
 
-                    isDigging = false;
-
                     actionDuration.sliderDuration.value = 0;
 
                     anim.SetBool("Digging", false);
                     anim.SetBool("Idle", true);
 
-                    cdAction -= Time.deltaTime;
-
-                    if (cdAction <= 0) {
-                        cdAction = 0.5f;
-                        isAction = false;
-                    }
+                    isDigging = false;
                 }
             } else if (conversationFunction.isConversation == true) {
                 conversationFunction.conversationCamera.SetActive(true);
                 conversationFunction.conversation.SetActive(true);
                 conversationFunction.player.SetActive(false);
                 conversationFunction.ui.SetActive(false);
-            } else if (conversationFunction.isConversation == false) {
+            } else {
                 conversationFunction.conversationCamera.SetActive(false);
                 conversationFunction.conversation.SetActive(false);
                 conversationFunction.player.SetActive(true);
                 conversationFunction.ui.SetActive(true);
-            } else {
+
                 cdAction -= Time.deltaTime;
 
                 if (cdAction <= 0) {
                     cdAction = 0.5f;
                     isAction = false;
                 }
-
             }
         }
     }
 
     public void ButtonActionFunction() {
         if (isAction == false) {
-            if (GameController.gameController.nameSelectedAction == "Tools") {
+            if (GameController.gameController.action.nameSelectedAction == "Tools") {
                 xRounded = Mathf.Round(actionPoint.transform.position.x);
                 zRounded = Mathf.Round(actionPoint.transform.position.z);
                 xPosition = actionPoint.transform.position.x;
@@ -204,7 +200,7 @@ public class ActionController : MonoBehaviour {
                 xRange = gridObject.transform.localScale.x / 2;
                 zRange = gridObject.transform.localScale.z / 2;
 
-                if (GameController.gameController.nameSelectedTools == "Hoe" && PlayerController.playerController.farm.digStatus == false &&
+                if (GameController.gameController.action.nameSelectedTools == "Hoe" && PlayerController.playerController.farm.digStatus == false &&
                     xPosition < gridObject.transform.position.x + xRange && xPosition > gridObject.transform.position.x - xRange &&
                     zPosition < gridObject.transform.position.z + zRange && zPosition > gridObject.transform.position.z - zRange) {
 
@@ -222,8 +218,11 @@ public class ActionController : MonoBehaviour {
                     }
 
                     isDigging = true;
+                    isAction = true;
+                } else if (GameController.gameController.action.nameSelectedTools == "Sickle") {
+                    isAction = true;
                 }
-            } else if (GameController.gameController.nameSelectedAction == "Seeds" && SelectSeedsController.selectSeedsController.selectSeeds.currentSlotStatus == true) {
+            } else if (GameController.gameController.action.nameSelectedAction == "Seeds" && SelectSeedsController.selectSeedsController.selectSeeds.currentSlotStatus == true) {
                 xRounded = Mathf.Round(playerPoint.transform.position.x);
                 zRounded = Mathf.Round(playerPoint.transform.position.z);
                 xPosition = playerPoint.transform.position.x;
@@ -250,20 +249,25 @@ public class ActionController : MonoBehaviour {
                     }
 
                     GameObject obj = Instantiate(prefebSeedObject, new Vector3(xPosition, 1.517f, zPosition), Quaternion.identity);
+
+                    isAction = true;
                 }
-            } else if (GameController.gameController.nameSelectedAction == "Conversations" && conversationFunction.isTouchNPC == true) {
+            } else if (GameController.gameController.action.nameSelectedAction == "Conversations" && conversationFunction.isTouchNPC == true) {
                 conversationFunction.isConversation = true;
-            } else if (GameController.gameController.nameSelectedAction == "Pick" && pickUp.isTouchItem == true) {
+
+                isAction = true;
+            } else if (GameController.gameController.action.nameSelectedAction == "Pick" && pickUp.isTouchItem == true) {
                 pickUp.itemDialogueBox.SetActive(true);
 
                 pickUp.textItemName.text = pickUp.itemName;
 
                 isPicking = true;
-            } else if (GameController.gameController.nameSelectedAction == "Harvest" && isHarvest == true) {
+                isAction = true;
+            } else if (GameController.gameController.action.nameSelectedAction == "Harvest" && isHarvest == true) {
                 isHarvesting = true;
-            }
 
-            isAction = true;
+                isAction = true;
+            }
         }
     }
 }

@@ -7,9 +7,6 @@ public class UIInventoryController : MonoBehaviour {
     public GameObject
         panelInventory;
 
-    public bool
-        isActive;
-
     void Start() {
         
     }
@@ -19,14 +16,15 @@ public class UIInventoryController : MonoBehaviour {
     }
 
     public void ButtonInventoryFunction() {
-        if (isActive == false) {
+        if (InventoryItemController.inventoryItemController.isInventory == false) {
+            InventoryItemController.inventoryItemController.title.text = "Inventory";
             panelInventory.SetActive(true);
 
-            isActive = true;
-        } else if (isActive == true) {
+            InventoryItemController.inventoryItemController.isInventory = true;
+        } else if (InventoryItemController.inventoryItemController.isInventory == true) {
             panelInventory.SetActive(false);
 
-            isActive = false;
+            InventoryItemController.inventoryItemController.isInventory = false;
         }
     }
 }

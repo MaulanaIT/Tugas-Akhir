@@ -6,12 +6,11 @@ using UnityEngine;
 public class SeedController : MonoBehaviour {
 
     public GameObject
-        player, 
+        player,
         actionPoint,
-        prefebSecondPhase, 
-        prefebThirdPhase, 
-        prefebHarvestPhase,
-        prefebHarvestItem;
+        prefebSecondPhase,
+        prefebThirdPhase,
+        prefebHarvestPhase;
 
     public Mesh
         meshSecondPhase,
@@ -23,8 +22,8 @@ public class SeedController : MonoBehaviour {
         public GameObject
             prefebSecondPhase,
             prefebThirdPhase,
-            prefebHarvestPhase, 
-            prefebItem;
+            prefebHarvestPhase;
+
     }
     public Cengkeh cengkeh = new Cengkeh();
 
@@ -33,60 +32,72 @@ public class SeedController : MonoBehaviour {
         public GameObject
             prefebSecondPhase,
             prefebThirdPhase,
-            prefebHarvestPhase,
-            prefebItem;
+            prefebHarvestPhase;
     }
     public Karet karet = new Karet();
 
     [System.Serializable]
-    public class Lada {
+    public class KelapaSawit {
         public GameObject
             prefebSecondPhase,
             prefebThirdPhase,
-            prefebHarvestPhase,
-            prefebItem;
+            prefebHarvestPhase;
     }
-    public Lada lada = new Lada();
+    public KelapaSawit kelapaSawit = new KelapaSawit();
 
     [System.Serializable]
     public class Tembakau {
         public GameObject
             prefebSecondPhase,
             prefebThirdPhase,
-            prefebHarvestPhase,
-            prefebItem;
+            prefebHarvestPhase;
     }
     public Tembakau tembakau = new Tembakau();
 
     [System.Serializable]
-    public class Kapas {
+    public class KopiRobusta {
         public GameObject
             prefebSecondPhase,
             prefebThirdPhase,
-            prefebHarvestPhase,
-            prefebItem;
+            prefebHarvestPhase;
     }
-    public Kapas kapas = new Kapas();
+    public KopiRobusta kopiRobusta = new KopiRobusta();
 
     [System.Serializable]
     public class Teh {
         public GameObject
             prefebSecondPhase,
             prefebThirdPhase,
-            prefebHarvestPhase,
-            prefebItem;
+            prefebHarvestPhase;
     }
     public Teh teh = new Teh();
 
     [System.Serializable]
-    public class Kopi {
+    public class KopiArabika {
         public GameObject
             prefebSecondPhase,
             prefebThirdPhase,
-            prefebHarvestPhase,
-            prefebItem;
+            prefebHarvestPhase;
     }
-    public Kopi kopi = new Kopi();
+    public KopiArabika kopiArabika = new KopiArabika();
+
+    [System.Serializable]
+    public class Tebu {
+        public GameObject
+            prefebSecondPhase,
+            prefebThirdPhase,
+            prefebHarvestPhase;
+    }
+    public Tebu tebu = new Tebu();
+
+    [System.Serializable]
+    public class Kakao {
+        public GameObject
+            prefebSecondPhase,
+            prefebThirdPhase,
+            prefebHarvestPhase;
+    }
+    public Kakao kakao = new Kakao();
 
     private float
         xRange, 
@@ -95,7 +106,8 @@ public class SeedController : MonoBehaviour {
         zPosition;
 
     public string 
-        seedName;
+        seedName, 
+        harvestName;
 
     public float 
         firstPhase, 
@@ -106,13 +118,14 @@ public class SeedController : MonoBehaviour {
         speedCooldown;
 
     public bool
-        isTouch,
+        isTouch, 
+        isMoveAway,
         isHarvest;
 
     void Start() {
         player = GameObject.FindGameObjectWithTag("Player");
         actionPoint = GameObject.FindGameObjectWithTag("ActionPoint");
-        seedName = GameController.gameController.nameSelectedSeeds;
+        seedName = GameController.gameController.action.nameSelectedSeeds;
 
         //Penentuan variabel sesuai nama benih
         switch (seedName) {
@@ -125,7 +138,7 @@ public class SeedController : MonoBehaviour {
                 prefebSecondPhase = cengkeh.prefebSecondPhase;
                 prefebThirdPhase = cengkeh.prefebThirdPhase;
                 prefebHarvestPhase = cengkeh.prefebHarvestPhase;
-                prefebHarvestItem = cengkeh.prefebItem;
+                harvestName = "Daun Cengkeh";
 
                 GetMeshFunction();
                 break;
@@ -138,20 +151,20 @@ public class SeedController : MonoBehaviour {
                 prefebSecondPhase = karet.prefebSecondPhase;
                 prefebThirdPhase = karet.prefebThirdPhase;
                 prefebHarvestPhase = karet.prefebHarvestPhase;
-                prefebHarvestItem = karet.prefebItem;
+                harvestName = "Getah Karet";
 
                 GetMeshFunction();
                 break;
-            case "Lada":
+            case "Kelapa Sawit":
                 firstPhase = 2;
                 secondPhase = 5;
                 thirdPhase = 1;
                 repeatableHarvestTime = 1;
 
-                prefebSecondPhase = lada.prefebSecondPhase;
-                prefebThirdPhase = lada.prefebThirdPhase;
-                prefebHarvestPhase = lada.prefebHarvestPhase;
-                prefebHarvestItem = lada.prefebItem;
+                prefebSecondPhase = kelapaSawit.prefebSecondPhase;
+                prefebThirdPhase = kelapaSawit.prefebThirdPhase;
+                prefebHarvestPhase = kelapaSawit.prefebHarvestPhase;
+                harvestName = "Buah Kelapa Sawit";
 
                 GetMeshFunction();
                 break;
@@ -164,20 +177,20 @@ public class SeedController : MonoBehaviour {
                 prefebSecondPhase = tembakau.prefebSecondPhase;
                 prefebThirdPhase = tembakau.prefebThirdPhase;
                 prefebHarvestPhase = tembakau.prefebHarvestPhase;
-                prefebHarvestItem = tembakau.prefebItem;
+                harvestName = "Daun Tembakau";
 
                 GetMeshFunction();
                 break;
-            case "Kapas":
+            case "Kopi Robusta":
                 firstPhase = 2;
                 secondPhase = 5;
                 thirdPhase = 1;
                 repeatableHarvestTime = 1;
 
-                prefebSecondPhase = kapas.prefebSecondPhase;
-                prefebThirdPhase = kapas.prefebThirdPhase;
-                prefebHarvestPhase = kapas.prefebHarvestPhase;
-                prefebHarvestItem = kapas.prefebItem;
+                prefebSecondPhase = kopiRobusta.prefebSecondPhase;
+                prefebThirdPhase = kopiRobusta.prefebThirdPhase;
+                prefebHarvestPhase = kopiRobusta.prefebHarvestPhase;
+                harvestName = "Biji Kopi Robusta";
 
                 GetMeshFunction();
                 break;
@@ -190,26 +203,60 @@ public class SeedController : MonoBehaviour {
                 prefebSecondPhase = teh.prefebSecondPhase;
                 prefebThirdPhase = teh.prefebThirdPhase;
                 prefebHarvestPhase = teh.prefebHarvestPhase;
-                prefebHarvestItem = teh.prefebItem;
+                harvestName = "Daun Teh";
 
                 GetMeshFunction();
                 break;
-            case "Kopi":
+            case "Kopi Arabika":
                 firstPhase = 2;
                 secondPhase = 5;
                 thirdPhase = 1;
                 repeatableHarvestTime = 1;
 
-                prefebSecondPhase = kopi.prefebSecondPhase;
-                prefebThirdPhase = kopi.prefebThirdPhase;
-                prefebHarvestPhase = kopi.prefebHarvestPhase;
-                prefebHarvestItem = kopi.prefebItem;
+                prefebSecondPhase = kopiArabika.prefebSecondPhase;
+                prefebThirdPhase = kopiArabika.prefebThirdPhase;
+                prefebHarvestPhase = kopiArabika.prefebHarvestPhase;
+                harvestName = "Biji Kopi Arabika";
+
+                GetMeshFunction();
+                break;
+            case "Tebu":
+                firstPhase = 2;
+                secondPhase = 5;
+                thirdPhase = 1;
+                repeatableHarvestTime = 1;
+
+                prefebSecondPhase = tebu.prefebSecondPhase;
+                prefebThirdPhase = tebu.prefebThirdPhase;
+                prefebHarvestPhase = tebu.prefebHarvestPhase;
+                harvestName = "Tebu";
+
+                GetMeshFunction();
+                break;
+            case "Kakao":
+                firstPhase = 2;
+                secondPhase = 5;
+                thirdPhase = 1;
+                repeatableHarvestTime = 1;
+
+                prefebSecondPhase = kakao.prefebSecondPhase;
+                prefebThirdPhase = kakao.prefebThirdPhase;
+                prefebHarvestPhase = kakao.prefebHarvestPhase;
+                harvestName = "Buah Kakao";
 
                 GetMeshFunction();
                 break;
         }
 
         timeCooldown = 86400f;
+
+        for (int i = 0; i < InventorySeedsController.inventorySeedsController.seedsObtained.name.Length; i++) {
+            if (GameController.gameController.action.nameSelectedSeeds == InventorySeedsController.inventorySeedsController.seedsObtained.name[i]) {
+                InventorySeedsController.inventorySeedsController.seedsObtained.count[i]--;
+            }
+        }
+
+        CheckingAllSlot();
     }
 
     void Update() {
@@ -245,8 +292,9 @@ public class SeedController : MonoBehaviour {
 
                 if (firstPhase == 0) {
                     this.gameObject.GetComponent<MeshFilter>().mesh = meshSecondPhase;
+                    this.gameObject.GetComponent<CapsuleCollider>().radius = prefebSecondPhase.GetComponent<CapsuleCollider>().radius;
                     this.gameObject.transform.localScale = prefebSecondPhase.transform.localScale;
-                    this.gameObject.transform.localPosition = new Vector3(transform.localPosition.x, transform.localScale.y - 0.05f, transform.localPosition.z);
+                    this.gameObject.transform.localPosition = new Vector3(transform.localPosition.x, ActionController.actionController.gridObject.transform.position.y + transform.localScale.y, transform.localPosition.z);
                 }
             }
             else if (firstPhase <= 0 && secondPhase > 0 && thirdPhase > 0) {
@@ -254,8 +302,9 @@ public class SeedController : MonoBehaviour {
 
                 if (secondPhase == 0) {
                     this.gameObject.GetComponent<MeshFilter>().mesh = meshThirdPhase;
+                    this.gameObject.GetComponent<CapsuleCollider>().radius = prefebThirdPhase.GetComponent<CapsuleCollider>().radius;
                     this.gameObject.transform.localScale = prefebThirdPhase.transform.localScale;
-                    this.gameObject.transform.localPosition = new Vector3(transform.localPosition.x, transform.localScale.y - 0.05f, transform.localPosition.z);
+                    this.gameObject.transform.localPosition = new Vector3(transform.localPosition.x, ActionController.actionController.gridObject.transform.position.y + transform.localScale.y, transform.localPosition.z);
                 }
             }
             else if (firstPhase <= 0 && secondPhase <= 0 && thirdPhase > 0) {
@@ -263,8 +312,9 @@ public class SeedController : MonoBehaviour {
 
                 if (thirdPhase == 0) {
                     this.gameObject.GetComponent<MeshFilter>().mesh = meshHarvestPhase;
+                    this.gameObject.GetComponent<CapsuleCollider>().radius = prefebHarvestPhase.GetComponent<CapsuleCollider>().radius;
                     this.gameObject.transform.localScale = prefebHarvestPhase.transform.localScale;
-                    this.gameObject.transform.localPosition = new Vector3(transform.localPosition.x, transform.localScale.y - 0.05f, transform.localPosition.z);
+                    this.gameObject.transform.localPosition = new Vector3(transform.localPosition.x, ActionController.actionController.gridObject.transform.position.y + transform.localScale.y, transform.localPosition.z);
 
                     isHarvest = true;
                 }
@@ -276,53 +326,35 @@ public class SeedController : MonoBehaviour {
 
     //Fungsi deteksi objek tersentuh
     public void DetectTouchObject() {
-        float
-            //Seberapa panjang jarak antara objek dengan player
-            distanceX,
-            distanceZ,
-
-            //Seberapa panjang jarak untuk mengaktifkan isTouch
-            provisionX,
-            provisionZ;
-
-        //Fungsi untuk mengetahui jarak objek dengan player
-        distanceX = transform.position.x - player.transform.position.x;
-        distanceZ = transform.position.z - player.transform.position.z;
-
-        //Fungsi untuk menentukan jarak pengaktifan isTouch
-        provisionX = (transform.localScale.x / 2) + (player.GetComponent<CapsuleCollider>().radius / 2);
-        provisionZ = (transform.localScale.z / 2) + (player.GetComponent<CapsuleCollider>().radius / 2);
 
         //Kondisi pengaktifan isTouch
         if (firstPhase <= 0) {
-            if (ActionController.actionController.isHarvest == false && Math.Abs(distanceX) <= provisionX && Math.Abs(distanceZ) <= provisionZ) {
-                isTouch = true;
-
+            if (isTouch == true) {
                 ActionController.actionController.isHarvest = isHarvest;
-                ActionController.actionController.pickUp.itemName = seedName;
-            } else if (isTouch == true && Math.Abs(distanceX) > provisionX || Math.Abs(distanceZ) > provisionZ) {
-                isTouch = false;
-
+                ActionController.actionController.pickUp.itemName = harvestName;
+            } else if (isTouch == false && isMoveAway == true) {
                 ActionController.actionController.isHarvest = false;
                 ActionController.actionController.pickUp.itemName = "";
+
+                isMoveAway = false;
             }
         }
     }
 
     //Fungsi aksi saat tersentuh
     public void IsActedOn() {
-        if (isTouch == true && isHarvest == true && ActionController.actionController.isHarvesting == true && GameController.gameController.nameSelectedAction == "Harvest" && 
+        if (isTouch == true && isHarvest == true && ActionController.actionController.isHarvesting == true && GameController.gameController.action.nameSelectedAction == "Harvest" && 
             ActionController.actionController.actionDuration.sliderDuration.value >= 1 && thirdPhase <= 0) {
             this.gameObject.GetComponent<MeshFilter>().mesh = meshThirdPhase;
             this.gameObject.transform.localScale = prefebThirdPhase.transform.localScale;
-            this.gameObject.transform.localPosition = new Vector3(transform.localPosition.x, transform.localScale.y - 0.05f, transform.localPosition.z);
+            this.gameObject.transform.localPosition = new Vector3(transform.localPosition.x, ActionController.actionController.gridObject.transform.position.y + transform.localScale.y, transform.localPosition.z);
 
             thirdPhase = repeatableHarvestTime;
 
             isHarvest = false;
-        } else if (isHarvest == true && isTouch == true && GameController.gameController.nameSelectedAction == "Tools" && GameController.gameController.nameSelectedTools == "Sickle" && 
+        } else if (isHarvest == true && isTouch == true && GameController.gameController.action.nameSelectedAction == "Tools" && GameController.gameController.action.nameSelectedTools == "Sickle" && 
             ActionController.actionController.isAction == true && firstPhase <= 0) {
-            Destroy(gameObject.transform.parent.gameObject);
+            Destroy(gameObject);
         }
     }
 
@@ -331,5 +363,27 @@ public class SeedController : MonoBehaviour {
         meshSecondPhase = prefebSecondPhase.GetComponent<MeshFilter>().sharedMesh;
         meshThirdPhase = prefebThirdPhase.GetComponent<MeshFilter>().sharedMesh;
         meshHarvestPhase = prefebHarvestPhase.GetComponent<MeshFilter>().sharedMesh;
+    }
+
+    public void CheckingAllSlot() {
+        InventorySeedsController.inventorySeedsController.isChecking = true;
+        InventoryToolsController.inventoryToolsController.isChecking = true;
+        InventoryItemController.inventoryItemController.isSlotChecking = true;
+        SelectSeedsController.selectSeedsController.slotSeeds.slotChecking = true;
+    }
+
+    private void OnCollisionEnter(Collision collision) {
+        if (collision.gameObject.tag == "Player") {
+            if (ActionController.actionController.pickUp.isTouchItem == false) {
+                isTouch = true;
+            }
+        }
+    }
+
+    private void OnCollisionExit(Collision collision) {
+        if (collision.gameObject.tag == "Player") {
+            isTouch = false;
+            isMoveAway = true;
+        }
     }
 }

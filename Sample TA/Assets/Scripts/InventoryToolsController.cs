@@ -18,16 +18,24 @@ public class InventoryToolsController : MonoBehaviour {
     }
     public ListTools listTools = new ListTools();
 
-    public string[] 
-        currentToolsName;
+    [System.Serializable]
+    public class SlotTools {
+        public int
+            currentToolsSlot,
+            maxToolsSlot;
 
-    public int
-        currentToolsSlot,
-        maxToolsSlot;
+        public GameObject[]
+            toolsSlot,
+            toolsSlotImage;
+    }
+    public SlotTools slotTools = new SlotTools();
 
-    public GameObject[]
-        toolsSlot,
-        toolsSlotImage;
+    [System.Serializable]
+    public class ToolsObtained {
+        public string[] 
+            name;
+    }
+    public ToolsObtained toolsObtained = new ToolsObtained();
 
     public bool
         isChecking;
@@ -41,22 +49,33 @@ public class InventoryToolsController : MonoBehaviour {
     }
 
     void Start() {
-        
+        CheckingAllSlot();
     }
 
     void Update() {
         if (isChecking == true) {
-            for (int i = 0; i < currentToolsSlot; i++) {
-                toolsSlot[i].SetActive(true);
+            for (int i = 0; i < slotTools.currentToolsSlot; i++) {
+                slotTools.toolsSlot[i].SetActive(true);
 
-                toolsSlotImage[i].GetComponent<Image>().sprite = listTools.toolsImage[i];
+                for (int j = 0; j < listTools.toolsName.Length; j++) {
+                    if (toolsObtained.name[i] == listTools.toolsName[j]) {
+                        slotTools.toolsSlotImage[i].GetComponent<Image>().sprite = listTools.toolsImage[i];
+                    }
+                }
             }
 
-            for (int i = currentToolsSlot; i < maxToolsSlot; i++) {
-                toolsSlot[i].SetActive(false);
+            for (int i = slotTools.currentToolsSlot; i < slotTools.maxToolsSlot; i++) {
+                slotTools.toolsSlot[i].SetActive(false);
             }
 
             isChecking = false;
         }
+    }
+
+    public void CheckingAllSlot() {
+        InventorySeedsController.inventorySeedsController.isChecking = true;
+        isChecking = true;
+        InventoryItemController.inventoryItemController.isSlotChecking = true;
+        SelectSeedsController.selectSeedsController.slotSeeds.slotChecking = true;
     }
 }

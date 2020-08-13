@@ -2,8 +2,20 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class InputController : MonoBehaviour {
+
+    [System.Serializable]
+    public class SoundEffect {
+        public AudioClip 
+            walkFootStep, 
+            runFootStep;
+
+        public AudioSource 
+            playerAudio;
+    }
+    public SoundEffect soundEffect = new SoundEffect();
 
     public FixedJoystick 
         fixedJoystick;
@@ -23,42 +35,58 @@ public class InputController : MonoBehaviour {
     public float
         smoothSpeed = 0.125f,
         cameraAngle,
-        cameraAngleSpeed = 0.1f;
+        cameraAngleSpeed;
 
     void Start() {
         mainCamera = GameObject.FindGameObjectWithTag("MainCamera").transform;
         anim = GetComponent<Animator>();
         rigidbody = GetComponent<Rigidbody>();
+        soundEffect.playerAudio = GetComponent<AudioSource>();
     }
 
     void Update() {
-        var input = new Vector3(fixedJoystick.inputVector.x, 0f, fixedJoystick.inputVector.y);
-        var velocity = Quaternion.AngleAxis(cameraAngle, Vector3.up) * input * 5f;
+        if (ActionController.actionController.isAction == false) {
+            var input = new Vector3(fixedJoystick.inputVector.x, 0f, fixedJoystick.inputVector.y);
+            var velocity = Quaternion.AngleAxis(cameraAngle, Vector3.up) * input * 5f;
 
-        rigidbody.velocity = new Vector3(velocity.x, rigidbody.velocity.y, velocity.z);
+            rigidbody.velocity = new Vector3(velocity.x, rigidbody.velocity.y, velocity.z);
 
-        if (fixedJoystick.inputVector.x != 0 || fixedJoystick.inputVector.y != 0) {
-            transform.rotation = Quaternion.AngleAxis(cameraAngle + Vector3.SignedAngle(Vector3.forward, input.normalized + Vector3.forward * 0.001f, Vector3.up), Vector3.up);
-        }
-
-        cameraAngle += fixedTouchField.TouchDist.x * cameraAngleSpeed;
-
-        mainCamera.position = transform.position + Quaternion.AngleAxis(cameraAngle, Vector3.up) * new Vector3(0f, 3f, -4.2f);
-        mainCamera.rotation = Quaternion.LookRotation(transform.position + Vector3.up - mainCamera.position, Vector3.up);
-
-        if (Math.Abs(fixedJoystick.inputVector.x) > 0 || Math.Abs(fixedJoystick.inputVector.y) > 0) {
-            if (Math.Abs(fixedJoystick.inputVector.x) > 0.4f || Math.Abs(fixedJoystick.inputVector.y) > 0.4f) {
-                anim.SetBool("param_idletorunning", true);
-                anim.SetBool("param_idletowalk", false);
-                anim.SetBool("param_toidle", false);
-            } else {
-                anim.SetBool("param_idletowalk", true);
-                anim.SetBool("param_idletorunning", false);
-                anim.SetBool("param_toidle", false);
+            if (fixedJoystick.inputVector.x != 0 || fixedJoystick.inputVector.y != 0) {
+                transform.rotation = Quaternion.AngleAxis(cameraAngle + Vector3.SignedAngle(Vector3.forward, input.normalized + Vector3.forward * 0.001f, Vector3.up), Vector3.up);
             }
-        } else {
-            SetAllAnimationFlagsToFalse();
-            anim.SetBool("param_toidle", true);
+
+            cameraAngleSpeed = GameController.gameController.setting.cameraSensitivity.value / 100;
+
+            cameraAngle += fixedTouchField.TouchDist.x * cameraAngleSpeed;
+
+            mainCamera.position = transform.position + Quaternion.AngleAxis(cameraAngle, Vector3.up) * new Vector3(0f, 3f, -4.2f);
+            mainCamera.rotation = Quaternion.LookRotation(transform.position + Vector3.up - mainCamera.position, Vector3.up);
+
+            if (Math.Abs(fixedJoystick.inputVector.x) > 0 || Math.Abs(fixedJoystick.inputVector.y) > 0) {
+                if (Math.Abs(fixedJoystick.inputVector.x) > 0.4f || Math.Abs(fixedJoystick.inputVector.y) > 0.4f) {
+                    anim.SetBool("param_idletorunning", true);
+                    anim.SetBool("param_idletowalk", false);
+                    anim.SetBool("param_toidle", false);
+
+                    if (soundEffect.playerAudio.isPlaying == false) {
+                        soundEffect.playerAudio.clip = soundEffect.runFootStep;
+                        soundEffect.playerAudio.Play();
+                    }
+                } else {
+                    anim.SetBool("param_idletowalk", true);
+                    anim.SetBool("param_idletorunning", false);
+                    anim.SetBool("param_toidle", false);
+
+                    if (soundEffect.playerAudio.isPlaying == false) {
+                        soundEffect.playerAudio.clip = soundEffect.walkFootStep;
+                        soundEffect.playerAudio.Play();
+                    }
+                }
+            } else {
+                SetAllAnimationFlagsToFalse();
+                anim.SetBool("param_toidle", true);
+                soundEffect.playerAudio.Stop();
+            }
         }
     }
 

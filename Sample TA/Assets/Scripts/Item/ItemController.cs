@@ -25,41 +25,35 @@ public class ItemController : MonoBehaviour {
 
     //Fungsi deteksi objek tersentuh
     public void DetectTouchObject() {
-        float
-            //Seberapa panjang jarak antara objek dengan player
-            distanceX,
-            distanceZ,
-
-            //Seberapa panjang jarak untuk mengaktifkan isTouch
-            provisionX,
-            provisionZ;
-
-        //Fungsi untuk mengetahui jarak objek dengan player
-        distanceX = transform.position.x - player.transform.position.x;
-        distanceZ = transform.position.z - player.transform.position.z;
-
-        //Fungsi untuk menentukan jarak pengaktifan isTouch
-        provisionX = (transform.localScale.x / 2) + player.GetComponent<CapsuleCollider>().radius;
-        provisionZ = (transform.localScale.z / 2) + player.GetComponent<CapsuleCollider>().radius;
-
         //Kondisi pengaktifan isTouch
-        if (ActionController.actionController.pickUp.isTouchItem == false && Math.Abs(distanceX) <= provisionX && Math.Abs(distanceZ) <= provisionZ) {
-            isTouch = true;
-
+        if (isTouch == true) {
             ActionController.actionController.pickUp.isTouchItem = true;
             ActionController.actionController.pickUp.itemName = itemName;
-        } else if (isTouch == true && (Math.Abs(distanceX) > provisionX || Math.Abs(distanceZ) > provisionZ)) {
-            isTouch = false;
-
+        } else if (isTouch == false) {
             ActionController.actionController.pickUp.isTouchItem = false;
             ActionController.actionController.pickUp.itemName = "";
         }
         
-        if (ActionController.actionController.isPicking == true) {
+        if (isTouch == true && ActionController.actionController.isPicking == true) {
+            ActionController.actionController.isAction = false;
             ActionController.actionController.isPicking = false;
             ActionController.actionController.pickUp.isTouchItem = false;
             ActionController.actionController.pickUp.itemName = "";
             Destroy(gameObject);
+        }
+    }
+
+    private void OnCollisionEnter(Collision collision) {
+        if (collision.gameObject.tag == "Player") {
+            if (ActionController.actionController.pickUp.isTouchItem == false) {
+                isTouch = true;
+            }
+        }
+    }
+
+    private void OnCollisionExit(Collision collision) {
+        if (collision.gameObject.tag == "Player") {
+            isTouch = false;
         }
     }
 }

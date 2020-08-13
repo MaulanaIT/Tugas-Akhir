@@ -25,31 +25,31 @@ public class ChangeActionController : MonoBehaviour {
                 HideGameObject();
                 actionChat.SetActive(true);
 
-                GameController.gameController.nameSelectedAction = "Conversations";
+                GameController.gameController.action.nameSelectedAction = "Conversations";
                 break;
             case 1:
                 HideGameObject();
                 actionTools.SetActive(true);
 
-                GameController.gameController.nameSelectedAction = "Tools";
+                GameController.gameController.action.nameSelectedAction = "Tools";
                 break;
             case 2:
                 HideGameObject();
                 actionSeeds.SetActive(true);
 
-                GameController.gameController.nameSelectedAction = "Seeds";
+                GameController.gameController.action.nameSelectedAction = "Seeds";
                 break;
             case 3:
                 HideGameObject();
                 actionPick.SetActive(true);
 
-                GameController.gameController.nameSelectedAction = "Pick";
+                GameController.gameController.action.nameSelectedAction = "Pick";
                 break;
             case 4:
                 HideGameObject();
                 actionHarvest.SetActive(true);
 
-                GameController.gameController.nameSelectedAction = "Harvest";
+                GameController.gameController.action.nameSelectedAction = "Harvest";
                 break;
         }
     }

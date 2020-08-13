@@ -8,6 +8,9 @@ public class InventoryItemController : MonoBehaviour {
     public static InventoryItemController
         inventoryItemController;
 
+    public Text 
+        title;
+
     [System.Serializable]
     public class ListItem {
         public Sprite[]
@@ -26,7 +29,7 @@ public class InventoryItemController : MonoBehaviour {
             totalSlot;
 
         public GameObject[]
-            gameObject,
+            slot,
             image,
             textCount;
     }
@@ -95,6 +98,9 @@ public class InventoryItemController : MonoBehaviour {
     public ItemDescription itemDescription = new ItemDescription();
 
     public bool
+        isInventory,
+        isContainer,
+        isAlreadyObtained,
         isSlotChecking;
 
     private void Awake() {
@@ -106,9 +112,9 @@ public class InventoryItemController : MonoBehaviour {
     }
 
     void Start() {
-        isSlotChecking = true;
+        CheckingAllSlot();
 
-        slotItem.gameObject = GameObject.FindGameObjectsWithTag("Slot");
+        slotItem.slot = GameObject.FindGameObjectsWithTag("Slot");
         slotItem.image = GameObject.FindGameObjectsWithTag("ItemImage");
         slotItem.textCount = GameObject.FindGameObjectsWithTag("ItemNumber");
 
@@ -121,11 +127,11 @@ public class InventoryItemController : MonoBehaviour {
             Debug.Log("Checking Slot");
 
             for (int i = 0; i < currentSlotItem.totalSlot; i++) {
-                slotItem.gameObject[i].SetActive(true);
+                slotItem.slot[i].SetActive(true);
             }
 
             for (int i = currentSlotItem.totalSlot; i < slotItem.totalSlot; i++) {
-                slotItem.gameObject[i].SetActive(false);
+                slotItem.slot[i].SetActive(false);
             }
 
             for (int i = 0; i < itemObtained.name.Length; i++) {
@@ -149,33 +155,35 @@ public class InventoryItemController : MonoBehaviour {
             isSlotChecking = false;
         }
 
-        //Fungsi pindah item
-        if (moveItem.moveFromChecked == true && moveItem.moveToChecked == true) {
-            isSlotChecking = true;
+        if (isInventory == true) {
+            //Fungsi pindah item
+            if (moveItem.moveFromChecked == true && moveItem.moveToChecked == true) {
+                isSlotChecking = true;
 
-            itemObtained.name[moveItem.moveFromIndex] = moveItem.moveToName;
-            itemObtained.count[moveItem.moveFromIndex] = moveItem.moveToCount;
+                itemObtained.name[moveItem.moveFromIndex] = moveItem.moveToName;
+                itemObtained.count[moveItem.moveFromIndex] = moveItem.moveToCount;
 
-            itemObtained.name[moveItem.moveToIndex] = moveItem.moveFromName;
-            itemObtained.count[moveItem.moveToIndex] = moveItem.moveFromCount;
+                itemObtained.name[moveItem.moveToIndex] = moveItem.moveFromName;
+                itemObtained.count[moveItem.moveToIndex] = moveItem.moveFromCount;
 
-            moveItem.moveFromChecked = false;
-            moveItem.moveToChecked = false;
-            moveItem.isMoveItem = false;
-        }
+                moveItem.moveFromChecked = false;
+                moveItem.moveToChecked = false;
+                moveItem.isMoveItem = false;
+            }
 
-        if (moveItem.panelInventory.activeSelf == false || moveItem.panelItem.activeSelf == false) {
-            moveItem.isMoveItem = false;
+            if (moveItem.panelInventory.activeSelf == false || moveItem.panelItem.activeSelf == false) {
+                moveItem.isMoveItem = false;
 
-            moveItem.moveFromChecked = false;
-            moveItem.moveToChecked = false;
-        }
+                moveItem.moveFromChecked = false;
+                moveItem.moveToChecked = false;
+            }
 
-        if (moveItem.panelInventory.activeSelf == false) {
-            itemDescription.image.color = new Color(255, 255, 255, 0);
-            itemDescription.image.sprite = null;
-            itemDescription.name.text = null;
-            itemDescription.description.text = null;
+            if (moveItem.panelInventory.activeSelf == false) {
+                itemDescription.image.color = new Color(255, 255, 255, 0);
+                itemDescription.image.sprite = null;
+                itemDescription.name.text = null;
+                itemDescription.description.text = null;
+            }
         }
     }
 
@@ -183,18 +191,35 @@ public class InventoryItemController : MonoBehaviour {
     public void ButtonAcceptItemFunction() {
         for (int i = 0; i < currentSlotItem.totalSlot; i++) {
             if (itemObtained.name[i] == itemDialogueBox.textItemName.text) {
-                itemObtained.count[i] = itemObtained.count[i] + 1;
+                isAlreadyObtained = true;
                 break;
-            }else if (itemObtained.name[i] == "") {
-                itemObtained.name[i] = itemDialogueBox.textItemName.text;
-                itemObtained.count[i] = itemObtained.count[i] + 1;
-                break;
+            } else if (itemObtained.name[i] == "") {
+                isAlreadyObtained = false;
             } else {
                 Debug.Log("Inventory is full");
             }
         }
 
-        isSlotChecking = true;
+        if (isAlreadyObtained == true) {
+            for (int i = 0; i < currentSlotItem.totalSlot; i++) {
+                if (itemObtained.name[i] == itemDialogueBox.textItemName.text) {
+                    itemObtained.count[i] = itemObtained.count[i] + 1;
+                    break;
+                }
+            }
+        } else {
+            for (int i = 0; i < currentSlotItem.totalSlot; i++) {
+                if (itemObtained.name[i] == "") {
+                    itemObtained.name[i] = itemDialogueBox.textItemName.text;
+                    itemObtained.count[i] = itemObtained.count[i] + 1;
+                    break;
+                }
+            }
+        }
+
+        isAlreadyObtained = false;
+
+        CheckingAllSlot();
 
         itemDialogueBox.gameObject.SetActive(false);
     }
@@ -207,8 +232,8 @@ public class InventoryItemController : MonoBehaviour {
     //Fungsi kontrol item slot
     public void ButtonControlItemFunction(GameObject Item) {
         if (moveItem.isMoveItem == false) {
-            for (int i = 0; i < slotItem.gameObject.Length; i++) {
-                if (Item == slotItem.gameObject[i]) {
+            for (int i = 0; i < slotItem.slot.Length; i++) {
+                if (Item == slotItem.slot[i]) {
                     for (int j = 0; j < listItem.name.Length; j++) {
                         if (itemObtained.name[i] == listItem.name[j]) {
                             itemDescription.image.color = new Color(255, 255, 255, 255);
@@ -222,8 +247,8 @@ public class InventoryItemController : MonoBehaviour {
                 }
             }
         } else {
-            for (int i = 0; i < slotItem.gameObject.Length; i++) {
-                if (Item == slotItem.gameObject[i]) {
+            for (int i = 0; i < slotItem.slot.Length; i++) {
+                if (Item == slotItem.slot[i]) {
                     if (moveItem.moveFromChecked == false) {
                         moveItem.moveFromIndex = i;
                         moveItem.moveFromName = itemObtained.name[i];
@@ -256,5 +281,12 @@ public class InventoryItemController : MonoBehaviour {
     //Fungsi mengaktifkan fitur pindah slot item
     public void ButtonMoveItemFunction() {
         moveItem.isMoveItem = true;
+    }
+
+    public void CheckingAllSlot() {
+        InventorySeedsController.inventorySeedsController.isChecking = true;
+        InventoryToolsController.inventoryToolsController.isChecking = true;
+        isSlotChecking = true;
+        SelectSeedsController.selectSeedsController.slotSeeds.slotChecking = true;
     }
 }

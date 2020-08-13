@@ -97,7 +97,7 @@ public class ShopController : MonoBehaviour {
                 totalPrice += listShopItem.itemNumber[i] * listShopItem.itemPrice[i];
             }
 
-            InventoryItemController.inventoryItemController.isSlotChecking = true;
+            CheckingAllSlot();
         }
     }
 
@@ -106,5 +106,12 @@ public class ShopController : MonoBehaviour {
             isBound = false;
             isBuy = false;
         }
+    }
+
+    public void CheckingAllSlot() {
+        InventorySeedsController.inventorySeedsController.isChecking = true;
+        InventoryToolsController.inventoryToolsController.isChecking = true;
+        InventoryItemController.inventoryItemController.isSlotChecking = true;
+        SelectSeedsController.selectSeedsController.slotSeeds.slotChecking = true;
     }
 }
