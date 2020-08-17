@@ -28,7 +28,10 @@ public class ShopController : MonoBehaviour {
     public bool
         isBound,
         isBuy,
-        isShop;
+        isShop, 
+        isShopItem, 
+        isShopTool, 
+        isShopSeed;
 
     public int 
         totalPrice;
@@ -78,18 +81,48 @@ public class ShopController : MonoBehaviour {
             totalPrice = 0;
 
             for (int i = 0; i < listShopItem.itemName.Length; i++) {
-
                 if (listShopItem.itemNumber[i] > 0) {
-                    for (int j = 0; j < InventoryItemController.inventoryItemController.currentSlotItem.totalSlot; j++) {
-                        if (InventoryItemController.inventoryItemController.itemObtained.name[j] == "") {
-                            InventoryItemController.inventoryItemController.itemObtained.name[j] = listShopItem.itemName[i];
-                            InventoryItemController.inventoryItemController.itemObtained.count[j] = listShopItem.itemNumber[i];
-                            break;
-                        } else if (InventoryItemController.inventoryItemController.itemObtained.name[j] == listShopItem.itemName[i]) {
-                            InventoryItemController.inventoryItemController.itemObtained.count[j] += listShopItem.itemNumber[i];
-                            break;
-                        } else {
-                            Debug.Log("Inventory is full");
+                    if (isShopItem == true) {
+                        for (int j = 0; j < InventoryItemController.inventoryItemController.currentSlotItem.totalSlot; j++) {
+                            if (InventoryItemController.inventoryItemController.itemObtained.name[j] == "") {
+                                InventoryItemController.inventoryItemController.itemObtained.name[j] = listShopItem.itemName[i];
+                                InventoryItemController.inventoryItemController.itemObtained.count[j] = listShopItem.itemNumber[i];
+                                break;
+                            } else if (InventoryItemController.inventoryItemController.itemObtained.name[j] == listShopItem.itemName[i]) {
+                                InventoryItemController.inventoryItemController.itemObtained.count[j] += listShopItem.itemNumber[i];
+                                break;
+                            } else {
+                                Debug.Log("Inventory is full");
+                            }
+                        }
+                    }
+
+                    if (isShopTool == true) {
+                        for (int j = 0; j < InventoryToolsController.inventoryToolsController.slotTools.maxToolsSlot; j++) {
+                            if (InventoryToolsController.inventoryToolsController.toolsObtained.name[j] == "") {
+                                InventoryToolsController.inventoryToolsController.toolsObtained.name[j] = listShopItem.itemName[i];
+                                break;
+                            } else if (InventoryItemController.inventoryItemController.itemObtained.name[j] == listShopItem.itemName[i]) {
+                                Debug.Log("Tool already obtained");
+                                break;
+                            } else {
+                                Debug.Log("Inventory is full");
+                            }
+                        }
+                    }
+
+                    if (isShopSeed == true) {
+                        for (int j = 0; j < InventorySeedsController.inventorySeedsController.slotSeeds.maxSeedsSlot; j++) {
+                            if (InventorySeedsController.inventorySeedsController.seedsObtained.name[j] == "") {
+                                InventorySeedsController.inventorySeedsController.seedsObtained.name[j] = listShopItem.itemName[i];
+                                InventorySeedsController.inventorySeedsController.seedsObtained.count[j] = listShopItem.itemNumber[i];
+                                break;
+                            } else if (InventorySeedsController.inventorySeedsController.seedsObtained.name[j] == listShopItem.itemName[i]) {
+                                InventorySeedsController.inventorySeedsController.seedsObtained.count[j] += listShopItem.itemNumber[i];
+                                break;
+                            } else {
+                                Debug.Log("Inventory is full");
+                            }
                         }
                     }
                 }

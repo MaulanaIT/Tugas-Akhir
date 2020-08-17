@@ -252,8 +252,7 @@ public class ActionController : MonoBehaviour {
 
                     isAction = true;
                 }
-            } else if (GameController.gameController.action.nameSelectedAction == "Conversations" && conversationFunction.isTouchNPC == true) {
-                conversationFunction.isConversation = true;
+            } else if (GameController.gameController.action.nameSelectedAction == "Conversations") {
 
                 isAction = true;
             } else if (GameController.gameController.action.nameSelectedAction == "Pick" && pickUp.isTouchItem == true) {

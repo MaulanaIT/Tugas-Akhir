@@ -11,7 +11,8 @@ public class InventorySeedsController : MonoBehaviour {
     [System.Serializable]
     public class ListSeeds {
         public string[]
-            seedsName;
+            seedsName, 
+            seedsDescription;
 
         public Sprite[]
             seedsImage;
@@ -40,6 +41,28 @@ public class InventorySeedsController : MonoBehaviour {
             count;
     }
     public SeedsObtained seedsObtained = new SeedsObtained();
+
+    [System.Serializable]
+    public class SeedsDescription {
+        public Image
+            image;
+
+        public Text
+            name,
+            description;
+    }
+    public SeedsDescription seedsDescription = new SeedsDescription();
+
+    [System.Serializable]
+    public class SeedsSelected {
+        public string
+            name;
+
+        public int
+            count, 
+            index;
+    }
+    public SeedsSelected seedsSelected = new SeedsSelected();
 
     public bool
         isChecking;
@@ -79,6 +102,33 @@ public class InventorySeedsController : MonoBehaviour {
             isChecking = false;
         }
     }
+
+    //Awal fungsi kontrol item slot
+    public void ButtonControlItemFunction(GameObject Item) {
+        for (int i = 0; i < slotSeeds.slot.Length; i++) {
+            InventoryController.inventoryController.setPanel.panelInventorySeed.transform.GetChild(i).GetComponent<Image>().color = new Color32(0, 0, 0, 150);
+        }
+
+        Item.GetComponent<Image>().color = new Color32(0, 0, 255, 150);
+
+        for (int i = 0; i < slotSeeds.slot.Length; i++) {
+            if (Item == slotSeeds.slot[i]) {
+                seedsSelected.name = seedsObtained.name[i];
+                seedsSelected.count = seedsObtained.count[i];
+                seedsSelected.index = i;
+
+                for (int j = 0; j < listSeeds.seedsName.Length; j++) {
+                    if (seedsObtained.name[i] == listSeeds.seedsName[j]) {
+                        seedsDescription.image.color = new Color(255, 255, 255, 255);
+                        seedsDescription.image.sprite = listSeeds.seedsImage[j];
+                        seedsDescription.name.text = listSeeds.seedsName[j];
+                        seedsDescription.description.text = listSeeds.seedsDescription[j];
+                    }
+                }
+            }
+        }
+    }
+    //Akhir fungsi kontrol item slot
 
     public void CheckingAllSlot() {
         isChecking = true;

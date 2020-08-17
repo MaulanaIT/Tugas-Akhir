@@ -11,7 +11,8 @@ public class InventoryToolsController : MonoBehaviour {
     [System.Serializable]
     public class ListTools {
         public string[]
-            toolsName;
+            toolsName, 
+            toolsDescription;
 
         public Sprite[]
             toolsImage;
@@ -37,6 +38,27 @@ public class InventoryToolsController : MonoBehaviour {
     }
     public ToolsObtained toolsObtained = new ToolsObtained();
 
+    [System.Serializable]
+    public class ItemDescription {
+        public Image
+            image;
+
+        public Text
+            name,
+            description;
+    }
+    public ItemDescription itemDescription = new ItemDescription();
+
+    [System.Serializable]
+    public class ToolsSelected {
+        public string
+            name;
+
+        public int 
+            index;
+    }
+    public ToolsSelected toolsSelected = new ToolsSelected();
+
     public bool
         isChecking;
 
@@ -60,6 +82,10 @@ public class InventoryToolsController : MonoBehaviour {
                 for (int j = 0; j < listTools.toolsName.Length; j++) {
                     if (toolsObtained.name[i] == listTools.toolsName[j]) {
                         slotTools.toolsSlotImage[i].GetComponent<Image>().sprite = listTools.toolsImage[i];
+                        slotTools.toolsSlotImage[i].GetComponent<Image>().color = new Color(255, 255, 255, 255);
+                        break;
+                    } else {
+                        slotTools.toolsSlotImage[i].GetComponent<Image>().color = new Color(255, 255, 255, 0);
                     }
                 }
             }
@@ -71,6 +97,32 @@ public class InventoryToolsController : MonoBehaviour {
             isChecking = false;
         }
     }
+
+    //Awal fungsi kontrol item slot
+    public void ButtonControlItemFunction(GameObject Item) {
+        for (int i = 0; i < slotTools.toolsSlot.Length; i++) {
+            InventoryController.inventoryController.setPanel.panelInventoryTool.transform.GetChild(i).GetComponent<Image>().color = new Color32(0, 0, 0, 150);
+        }
+
+        Item.GetComponent<Image>().color = new Color32(0, 0, 255, 150);
+
+        for (int i = 0; i < slotTools.toolsSlot.Length; i++) {
+            if (Item == slotTools.toolsSlot[i]) {
+                toolsSelected.name = toolsObtained.name[i];
+                toolsSelected.index = i;
+
+                for (int j = 0; j < listTools.toolsName.Length; j++) {
+                    if (toolsObtained.name[i] == listTools.toolsName[j]) {
+                        itemDescription.image.color = new Color(255, 255, 255, 255);
+                        itemDescription.image.sprite = listTools.toolsImage[j];
+                        itemDescription.name.text = listTools.toolsName[j];
+                        itemDescription.description.text = listTools.toolsDescription[j];
+                    }
+                }
+            }
+        }
+    }
+    //Akhir fungsi kontrol item slot
 
     public void CheckingAllSlot() {
         InventorySeedsController.inventorySeedsController.isChecking = true;

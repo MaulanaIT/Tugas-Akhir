@@ -63,10 +63,14 @@ public class InputController : MonoBehaviour {
             mainCamera.rotation = Quaternion.LookRotation(transform.position + Vector3.up - mainCamera.position, Vector3.up);
 
             if (Math.Abs(fixedJoystick.inputVector.x) > 0 || Math.Abs(fixedJoystick.inputVector.y) > 0) {
-                if (Math.Abs(fixedJoystick.inputVector.x) > 0.4f || Math.Abs(fixedJoystick.inputVector.y) > 0.4f) {
+                if (Math.Abs(fixedJoystick.inputVector.x) > 0.6f || Math.Abs(fixedJoystick.inputVector.y) > 0.6f) {
                     anim.SetBool("param_idletorunning", true);
                     anim.SetBool("param_idletowalk", false);
                     anim.SetBool("param_toidle", false);
+
+                    if (soundEffect.playerAudio.clip == soundEffect.walkFootStep) {
+                        soundEffect.playerAudio.Stop();
+                    }
 
                     if (soundEffect.playerAudio.isPlaying == false) {
                         soundEffect.playerAudio.clip = soundEffect.runFootStep;

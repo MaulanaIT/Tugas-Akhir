@@ -68,6 +68,16 @@ public class SelectSeedsController : MonoBehaviour {
     void Update() {
         //Kondisi pengecekan slot
         if (slotSeeds.slotChecking == true) {
+            for (int i = 0; i < InventorySeedsController.inventorySeedsController.slotSeeds.maxSeedsSlot; i++) {
+                if (i < InventorySeedsController.inventorySeedsController.slotSeeds.currentSeedsSlot) {
+                    slotSeeds.slotStatus[i] = true;
+
+                    slotSeeds.seedsName[i] = InventorySeedsController.inventorySeedsController.seedsObtained.name[i];
+                } else {
+                    slotSeeds.slotStatus[i] = false;
+                }
+            }
+
             for (int i = 0; i < slotSeeds.slotStatus.Length; i++) {
                 if (slotSeeds.slotStatus[i] == false) {
                     slotSeeds.slotDisabled[i].SetActive(true);
@@ -79,16 +89,10 @@ public class SelectSeedsController : MonoBehaviour {
                     if (slotSeeds.seedsName[i] == "Disable") {
                         slotSeeds.seedsName[i] = "";
                     }
-                }
-            }
 
-            for (int i = 0; i < InventorySeedsController.inventorySeedsController.slotSeeds.maxSeedsSlot; i++) {
-                if (i < InventorySeedsController.inventorySeedsController.slotSeeds.currentSeedsSlot) {
-                    slotSeeds.slotStatus[i] = true;
-
-                    slotSeeds.seedsName[i] = InventorySeedsController.inventorySeedsController.seedsObtained.name[i];
-                } else {
-                    slotSeeds.slotStatus[i] = false;
+                    if (slotSeeds.seedsName[i] == "") {
+                        slotSeeds.slotImage[i].gameObject.SetActive(false);
+                    }
                 }
             }
 
@@ -115,8 +119,14 @@ public class SelectSeedsController : MonoBehaviour {
         selectSeeds.currentSlotStatus = slotSeeds.slotStatus[numberSlot - 1];
 
         if (selectSeeds.currentSlotStatus == true) {
-            selectSeeds.selectedSeeds.gameObject.GetComponent<Image>().sprite = slotSeeds.slotImage[numberSlot - 1].sprite;
-            GameController.gameController.action.nameSelectedSeeds = slotSeeds.seedsName[numberSlot - 1];
+            if (slotSeeds.seedsName[numberSlot - 1] == "") {
+                selectSeeds.selectedSeeds.gameObject.SetActive(false);
+            } else {
+                selectSeeds.selectedSeeds.gameObject.SetActive(true);
+
+                selectSeeds.selectedSeeds.gameObject.GetComponent<Image>().sprite = slotSeeds.slotImage[numberSlot - 1].sprite;
+                GameController.gameController.action.nameSelectedSeeds = slotSeeds.seedsName[numberSlot - 1];
+            }
         } else if (selectSeeds.currentSlotStatus == false) {
             selectSeeds.selectedSeeds.gameObject.GetComponent<Image>().sprite = slotSeeds.slotDisabled[numberSlot - 1].GetComponent<Image>().sprite;
             GameController.gameController.action.nameSelectedSeeds = "Disable";

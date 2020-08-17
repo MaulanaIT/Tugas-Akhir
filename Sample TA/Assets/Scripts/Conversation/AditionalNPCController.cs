@@ -34,19 +34,33 @@ public class AditionalNPCController : MonoBehaviour {
     [System.Serializable]
     public class Shop {
         public GameObject
-            panelShop, 
-            panelListitem;
+            panelShop,
+            panelListitem,
+            panelItemShop,
+            panelToolShop, 
+            panelSeedShop;
+
+        public GameObject[] 
+            panelSeedShopLocation;
 
         public bool
-            isShop;
+            isShop, 
+            isItemShop, 
+            isToolShop, 
+            isSeedShop;
     }
     public Shop shop = new Shop();
+
+    public int 
+        indexLocation;
 
     public bool
         isTouch;
 
     void Start() {
         cameraLocationController = GetComponent<CameraLocationController>();
+
+        indexLocation = PlayerPrefs.GetInt("IndexLocation");
     }
 
     void Update() {
@@ -65,7 +79,8 @@ public class AditionalNPCController : MonoBehaviour {
             isTouch = false;
         }
 
-        if (isTouch == true && ActionController.actionController.conversationFunction.isConversation == true) {
+        if (isTouch == true && GameController.gameController.action.nameSelectedAction == "Conversations" && ActionController.actionController.isAction == true) {
+            ActionController.actionController.conversationFunction.isConversation = true;
             conversation.panelConversation.SetActive(true);
         } else if (ActionController.actionController.conversationFunction.isConversation == false) {
             conversation.panelConversation.SetActive(false);
@@ -97,8 +112,51 @@ public class AditionalNPCController : MonoBehaviour {
 
             if (conversation.currentConversationIndex == conversation.shopPanelConversationIndex) {
                 ShopController.shopController.isShop = true;
+
                 shop.panelShop.SetActive(true);
                 shop.panelListitem.SetActive(true);
+
+                if (shop.isItemShop == true) {
+                    ShopController.shopController.isShopItem = true;
+                    ShopController.shopController.isShopTool = false;
+                    ShopController.shopController.isShopSeed = false;
+
+                    shop.panelItemShop.SetActive(true);
+                    shop.panelToolShop.SetActive(false);
+                    shop.panelSeedShop.SetActive(false);
+
+                    for (int i = 0; i < shop.panelSeedShopLocation.Length; i++) {
+                        shop.panelSeedShopLocation[i].SetActive(false);
+                    }
+                } else if (shop.isToolShop == true) {
+                    ShopController.shopController.isShopItem = false;
+                    ShopController.shopController.isShopTool = true;
+                    ShopController.shopController.isShopSeed = false;
+
+                    shop.panelItemShop.SetActive(false);
+                    shop.panelToolShop.SetActive(true);
+                    shop.panelSeedShop.SetActive(false);
+
+                    for (int i = 0; i < shop.panelSeedShopLocation.Length; i++) {
+                        shop.panelSeedShopLocation[i].SetActive(false);
+                    }
+                } else if (shop.isSeedShop == true) {
+                    ShopController.shopController.isShopItem = false;
+                    ShopController.shopController.isShopTool = false;
+                    ShopController.shopController.isShopSeed = true;
+
+                    shop.panelItemShop.SetActive(false);
+                    shop.panelToolShop.SetActive(false);
+                    shop.panelSeedShop.SetActive(true);
+
+                    for (int i = 0; i < shop.panelSeedShopLocation.Length; i++) {
+                        if (i == indexLocation) {
+                            shop.panelSeedShopLocation[i].SetActive(true);
+                        } else {
+                            shop.panelSeedShopLocation[i].SetActive(false);
+                        }
+                    }
+                }
             } else {
                 ShopController.shopController.isShop = false;
                 shop.panelShop.SetActive(false);

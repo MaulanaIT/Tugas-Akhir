@@ -1,11 +1,13 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class UIInventoryController : MonoBehaviour {
 
     public GameObject
-        panelInventory;
+        panelInventory, 
+        panelItemDescription;
 
     void Start() {
         
@@ -15,16 +17,18 @@ public class UIInventoryController : MonoBehaviour {
         
     }
 
-    public void ButtonInventoryFunction() {
-        if (InventoryItemController.inventoryItemController.isInventory == false) {
-            InventoryItemController.inventoryItemController.title.text = "Inventory";
-            panelInventory.SetActive(true);
+    public void ButtonOpenInventoryFunction() {
+        InventoryItemController.inventoryItemController.title.text = "Inventory";
+        panelInventory.SetActive(true);
+        panelItemDescription.SetActive(true);
 
-            InventoryItemController.inventoryItemController.isInventory = true;
-        } else if (InventoryItemController.inventoryItemController.isInventory == true) {
-            panelInventory.SetActive(false);
+        InventoryItemController.inventoryItemController.isInventory = true;
+    }
 
-            InventoryItemController.inventoryItemController.isInventory = false;
-        }
+    public void ButtonCloseInventoryFunction() {
+        panelInventory.SetActive(false);
+        panelItemDescription.SetActive(false);
+
+        InventoryItemController.inventoryItemController.isInventory = false;
     }
 }
