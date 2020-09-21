@@ -57,6 +57,10 @@ public class QuestController : MonoBehaviour {
     }
 
     public void ButtonShowListQuest() {
+        GameController.gameController.audio.audioButton.Stop();
+        GameController.gameController.audio.audioButton.clip = GameController.gameController.audio.audioButtonSelect;
+        GameController.gameController.audio.audioButton.Play();
+
         if (isQuest == false) {
             panelQuest.SetActive(true);
 

@@ -114,27 +114,135 @@ public class SeedController : MonoBehaviour {
         secondPhase, 
         thirdPhase, 
         repeatableHarvestTime, 
+        minHarvestItem,
+        maxHarvestItem,
         timeCooldown, 
         speedCooldown;
 
     public bool
         isTouch, 
         isMoveAway,
-        isHarvest;
+        isHarvest, 
+        isNotification;
 
     void Start() {
         player = GameObject.FindGameObjectWithTag("Player");
         actionPoint = GameObject.FindGameObjectWithTag("ActionPoint");
-        seedName = GameController.gameController.action.nameSelectedSeeds;
 
-        //Penentuan variabel sesuai nama benih
+        if (PlayerPrefs.GetInt("LoadGame") == 0) {
+            seedName = GameController.gameController.action.nameSelectedSeeds;
+
+            //Penentuan variabel sesuai nama benih
+            switch (seedName) {
+                case "Cengkeh":
+                    firstPhase = 2;
+                    secondPhase = 5;
+                    thirdPhase = 1;
+                    repeatableHarvestTime = 1;
+
+                    minHarvestItem = 3;
+                    maxHarvestItem = 5;
+                    break;
+                case "Karet":
+                    firstPhase = 2;
+                    secondPhase = 5;
+                    thirdPhase = 1;
+                    repeatableHarvestTime = 1;
+
+                    minHarvestItem = 1;
+                    maxHarvestItem = 2;
+                    break;
+                case "Kelapa Sawit":
+                    firstPhase = 2;
+                    secondPhase = 5;
+                    thirdPhase = 1;
+                    repeatableHarvestTime = 1;
+
+                    minHarvestItem = 3;
+                    maxHarvestItem = 5;
+                    break;
+                case "Tembakau":
+                    firstPhase = 2;
+                    secondPhase = 5;
+                    thirdPhase = 1;
+                    repeatableHarvestTime = 1;
+
+                    minHarvestItem = 2;
+                    maxHarvestItem = 3;
+                    break;
+                case "Kopi Robusta":
+                    firstPhase = 2;
+                    secondPhase = 5;
+                    thirdPhase = 1;
+                    repeatableHarvestTime = 1;
+
+                    minHarvestItem = 1;
+                    maxHarvestItem = 3;
+                    break;
+                case "Teh":
+                    firstPhase = 2;
+                    secondPhase = 5;
+                    thirdPhase = 1;
+                    repeatableHarvestTime = 1;
+
+                    minHarvestItem = 3;
+                    maxHarvestItem = 7;
+                    break;
+                case "Kopi Arabika":
+                    firstPhase = 2;
+                    secondPhase = 5;
+                    thirdPhase = 1;
+                    repeatableHarvestTime = 1;
+
+                    minHarvestItem = 1;
+                    maxHarvestItem = 3;
+                    break;
+                case "Tebu":
+                    firstPhase = 2;
+                    secondPhase = 5;
+                    thirdPhase = 1;
+                    repeatableHarvestTime = 1;
+
+                    minHarvestItem = 1;
+                    maxHarvestItem = 1;
+                    break;
+                case "Kakao":
+                    firstPhase = 2;
+                    secondPhase = 5;
+                    thirdPhase = 1;
+                    repeatableHarvestTime = 1;
+
+                    minHarvestItem = 14;
+                    maxHarvestItem = 20;
+                    break;
+            }
+            timeCooldown = 86400f;
+
+            for (int i = 0; i < InventorySeedsController.inventorySeedsController.seedsObtained.name.Length; i++) {
+                if (GameController.gameController.action.nameSelectedSeeds == InventorySeedsController.inventorySeedsController.seedsObtained.name[i]) {
+                    InventorySeedsController.inventorySeedsController.seedsObtained.count[i]--;
+
+                    if (InventorySeedsController.inventorySeedsController.seedsObtained.count[i] <= 0) {
+                        InventorySeedsController.inventorySeedsController.seedsObtained.name[i] = null;
+                        InventorySeedsController.inventorySeedsController.seedsObtained.count[i] = 0;
+                    }
+                }
+            }
+        }
+    }
+
+    void Update() {
+        SetSeedFunction();
+        SeedPlantingFunction();
+        SeedGrowthFunction();
+        DetectTouchObject();
+        IsActedOn();
+    }
+
+    //Penentuan variabel sesuai nama benih
+    public void SetSeedFunction() {
         switch (seedName) {
             case "Cengkeh":
-                firstPhase = 2;
-                secondPhase = 5;
-                thirdPhase = 1;
-                repeatableHarvestTime = 1;
-
                 prefebSecondPhase = cengkeh.prefebSecondPhase;
                 prefebThirdPhase = cengkeh.prefebThirdPhase;
                 prefebHarvestPhase = cengkeh.prefebHarvestPhase;
@@ -143,11 +251,6 @@ public class SeedController : MonoBehaviour {
                 GetMeshFunction();
                 break;
             case "Karet":
-                firstPhase = 2;
-                secondPhase = 5;
-                thirdPhase = 1;
-                repeatableHarvestTime = 1;
-
                 prefebSecondPhase = karet.prefebSecondPhase;
                 prefebThirdPhase = karet.prefebThirdPhase;
                 prefebHarvestPhase = karet.prefebHarvestPhase;
@@ -156,11 +259,6 @@ public class SeedController : MonoBehaviour {
                 GetMeshFunction();
                 break;
             case "Kelapa Sawit":
-                firstPhase = 2;
-                secondPhase = 5;
-                thirdPhase = 1;
-                repeatableHarvestTime = 1;
-
                 prefebSecondPhase = kelapaSawit.prefebSecondPhase;
                 prefebThirdPhase = kelapaSawit.prefebThirdPhase;
                 prefebHarvestPhase = kelapaSawit.prefebHarvestPhase;
@@ -169,11 +267,6 @@ public class SeedController : MonoBehaviour {
                 GetMeshFunction();
                 break;
             case "Tembakau":
-                firstPhase = 2;
-                secondPhase = 5;
-                thirdPhase = 1;
-                repeatableHarvestTime = 1;
-
                 prefebSecondPhase = tembakau.prefebSecondPhase;
                 prefebThirdPhase = tembakau.prefebThirdPhase;
                 prefebHarvestPhase = tembakau.prefebHarvestPhase;
@@ -182,11 +275,6 @@ public class SeedController : MonoBehaviour {
                 GetMeshFunction();
                 break;
             case "Kopi Robusta":
-                firstPhase = 2;
-                secondPhase = 5;
-                thirdPhase = 1;
-                repeatableHarvestTime = 1;
-
                 prefebSecondPhase = kopiRobusta.prefebSecondPhase;
                 prefebThirdPhase = kopiRobusta.prefebThirdPhase;
                 prefebHarvestPhase = kopiRobusta.prefebHarvestPhase;
@@ -195,11 +283,6 @@ public class SeedController : MonoBehaviour {
                 GetMeshFunction();
                 break;
             case "Teh":
-                firstPhase = 2;
-                secondPhase = 5;
-                thirdPhase = 1;
-                repeatableHarvestTime = 1;
-
                 prefebSecondPhase = teh.prefebSecondPhase;
                 prefebThirdPhase = teh.prefebThirdPhase;
                 prefebHarvestPhase = teh.prefebHarvestPhase;
@@ -208,11 +291,6 @@ public class SeedController : MonoBehaviour {
                 GetMeshFunction();
                 break;
             case "Kopi Arabika":
-                firstPhase = 2;
-                secondPhase = 5;
-                thirdPhase = 1;
-                repeatableHarvestTime = 1;
-
                 prefebSecondPhase = kopiArabika.prefebSecondPhase;
                 prefebThirdPhase = kopiArabika.prefebThirdPhase;
                 prefebHarvestPhase = kopiArabika.prefebHarvestPhase;
@@ -221,11 +299,6 @@ public class SeedController : MonoBehaviour {
                 GetMeshFunction();
                 break;
             case "Tebu":
-                firstPhase = 2;
-                secondPhase = 5;
-                thirdPhase = 1;
-                repeatableHarvestTime = 1;
-
                 prefebSecondPhase = tebu.prefebSecondPhase;
                 prefebThirdPhase = tebu.prefebThirdPhase;
                 prefebHarvestPhase = tebu.prefebHarvestPhase;
@@ -234,11 +307,6 @@ public class SeedController : MonoBehaviour {
                 GetMeshFunction();
                 break;
             case "Kakao":
-                firstPhase = 2;
-                secondPhase = 5;
-                thirdPhase = 1;
-                repeatableHarvestTime = 1;
-
                 prefebSecondPhase = kakao.prefebSecondPhase;
                 prefebThirdPhase = kakao.prefebThirdPhase;
                 prefebHarvestPhase = kakao.prefebHarvestPhase;
@@ -247,23 +315,6 @@ public class SeedController : MonoBehaviour {
                 GetMeshFunction();
                 break;
         }
-
-        timeCooldown = 86400f;
-
-        for (int i = 0; i < InventorySeedsController.inventorySeedsController.seedsObtained.name.Length; i++) {
-            if (GameController.gameController.action.nameSelectedSeeds == InventorySeedsController.inventorySeedsController.seedsObtained.name[i]) {
-                InventorySeedsController.inventorySeedsController.seedsObtained.count[i]--;
-            }
-        }
-
-        CheckingAllSlot();
-    }
-
-    void Update() {
-        SeedPlantingFunction();
-        SeedGrowthFunction();
-        DetectTouchObject();
-        IsActedOn();
     }
 
     //Fungsi pengecekan status lahan penanaman
@@ -289,38 +340,49 @@ public class SeedController : MonoBehaviour {
         if (timeCooldown <= 0) {
             if (firstPhase > 0 && secondPhase > 0 && thirdPhase > 0) {
                 firstPhase--;
-
-                if (firstPhase == 0) {
-                    this.gameObject.GetComponent<MeshFilter>().mesh = meshSecondPhase;
-                    this.gameObject.GetComponent<CapsuleCollider>().radius = prefebSecondPhase.GetComponent<CapsuleCollider>().radius;
-                    this.gameObject.transform.localScale = prefebSecondPhase.transform.localScale;
-                    this.gameObject.transform.localPosition = new Vector3(transform.localPosition.x, ActionController.actionController.gridObject.transform.position.y + transform.localScale.y, transform.localPosition.z);
-                }
             }
             else if (firstPhase <= 0 && secondPhase > 0 && thirdPhase > 0) {
                 secondPhase--;
-
-                if (secondPhase == 0) {
-                    this.gameObject.GetComponent<MeshFilter>().mesh = meshThirdPhase;
-                    this.gameObject.GetComponent<CapsuleCollider>().radius = prefebThirdPhase.GetComponent<CapsuleCollider>().radius;
-                    this.gameObject.transform.localScale = prefebThirdPhase.transform.localScale;
-                    this.gameObject.transform.localPosition = new Vector3(transform.localPosition.x, ActionController.actionController.gridObject.transform.position.y + transform.localScale.y, transform.localPosition.z);
-                }
             }
             else if (firstPhase <= 0 && secondPhase <= 0 && thirdPhase > 0) {
                 thirdPhase--;
-
-                if (thirdPhase == 0) {
-                    this.gameObject.GetComponent<MeshFilter>().mesh = meshHarvestPhase;
-                    this.gameObject.GetComponent<CapsuleCollider>().radius = prefebHarvestPhase.GetComponent<CapsuleCollider>().radius;
-                    this.gameObject.transform.localScale = prefebHarvestPhase.transform.localScale;
-                    this.gameObject.transform.localPosition = new Vector3(transform.localPosition.x, ActionController.actionController.gridObject.transform.position.y + transform.localScale.y, transform.localPosition.z);
-
-                    isHarvest = true;
-                }
             }
 
             timeCooldown = 86400f;
+        }
+
+        if (firstPhase == 0 && secondPhase != 0 && thirdPhase != 0) {
+            this.gameObject.GetComponent<MeshFilter>().mesh = meshSecondPhase;
+            this.gameObject.GetComponent<CapsuleCollider>().radius = prefebSecondPhase.GetComponent<CapsuleCollider>().radius;
+            this.gameObject.transform.localScale = prefebSecondPhase.transform.localScale;
+            this.gameObject.transform.localPosition = new Vector3(transform.localPosition.x, ActionController.actionController.gridObject.transform.position.y + transform.localScale.y, transform.localPosition.z);
+        }
+
+        if (firstPhase == 0 && secondPhase == 0 && thirdPhase != 0) {
+            this.gameObject.GetComponent<MeshFilter>().mesh = meshThirdPhase;
+            this.gameObject.GetComponent<CapsuleCollider>().radius = prefebThirdPhase.GetComponent<CapsuleCollider>().radius;
+            this.gameObject.transform.localScale = prefebThirdPhase.transform.localScale;
+            this.gameObject.transform.localPosition = new Vector3(transform.localPosition.x, ActionController.actionController.gridObject.transform.position.y + transform.localScale.y, transform.localPosition.z);
+        }
+
+        if (firstPhase == 0 && secondPhase == 0 && thirdPhase == 0) {
+            this.gameObject.GetComponent<MeshFilter>().mesh = meshHarvestPhase;
+            this.gameObject.GetComponent<CapsuleCollider>().radius = prefebHarvestPhase.GetComponent<CapsuleCollider>().radius;
+            this.gameObject.transform.localScale = prefebHarvestPhase.transform.localScale;
+            this.gameObject.transform.localPosition = new Vector3(transform.localPosition.x, ActionController.actionController.gridObject.transform.position.y + transform.localScale.y, transform.localPosition.z);
+
+            if (isNotification == false) {
+                GameObject notification = Instantiate(NotificationController.notificationController.notification, NotificationController.notificationController.panelScrollable.transform);
+
+                NotificationController.notificationController.listNotification.Add(notification);
+
+                notification.GetComponent<Notification>().textTitle.text = "Panen";
+                notification.GetComponent<Notification>().textDescription.text = "Tanaman " + seedName + " siap untuk dipanen";
+
+                isNotification = true;
+            }
+
+            isHarvest = true;
         }
     }
 
@@ -351,10 +413,13 @@ public class SeedController : MonoBehaviour {
 
             thirdPhase = repeatableHarvestTime;
 
+            ActionController.actionController.pickUp.itemCount = UnityEngine.Random.Range(minHarvestItem, maxHarvestItem);
+
+            isNotification = false;
             isHarvest = false;
-        } else if (isHarvest == true && isTouch == true && GameController.gameController.action.nameSelectedAction == "Tools" && GameController.gameController.action.nameSelectedTools == "Sickle" && 
-            ActionController.actionController.isAction == true && firstPhase <= 0) {
+        } else if (isHarvest == true && isTouch == true && ActionController.actionController.isSickled == true && firstPhase <= 0) {
             Destroy(gameObject);
+            ActionController.actionController.isSickled = false;
         }
     }
 
@@ -363,13 +428,6 @@ public class SeedController : MonoBehaviour {
         meshSecondPhase = prefebSecondPhase.GetComponent<MeshFilter>().sharedMesh;
         meshThirdPhase = prefebThirdPhase.GetComponent<MeshFilter>().sharedMesh;
         meshHarvestPhase = prefebHarvestPhase.GetComponent<MeshFilter>().sharedMesh;
-    }
-
-    public void CheckingAllSlot() {
-        InventorySeedsController.inventorySeedsController.isChecking = true;
-        InventoryToolsController.inventoryToolsController.isChecking = true;
-        InventoryItemController.inventoryItemController.isSlotChecking = true;
-        SelectSeedsController.selectSeedsController.slotSeeds.slotChecking = true;
     }
 
     private void OnCollisionEnter(Collision collision) {

@@ -34,7 +34,10 @@ public class ChangeShopItemAmmount : MonoBehaviour {
             cooldown -= Time.deltaTime;
 
             if (cooldown <= 0) {
+                GameController.gameController.AudioButtonFunction(GameController.gameController.audio.audioButtonClick);
+
                 countItem.itemAmmount++;
+                cooldown = 0.1f;
             }
         }
 
@@ -42,7 +45,10 @@ public class ChangeShopItemAmmount : MonoBehaviour {
             cooldown -= Time.deltaTime;
 
             if (cooldown <= 0) {
+                GameController.gameController.AudioButtonFunction(GameController.gameController.audio.audioButtonClick);
+
                 countItem.itemAmmount--;
+                cooldown = 0.1f;
             }
         }
 
@@ -58,6 +64,8 @@ public class ChangeShopItemAmmount : MonoBehaviour {
     }
 
     public void ButtonDownIncreaseNumberFunction() {
+        GameController.gameController.AudioButtonFunction(GameController.gameController.audio.audioButtonClick);
+
         countItem.itemAmmount++;
         isBoundIncrease = true;
     }
@@ -68,6 +76,8 @@ public class ChangeShopItemAmmount : MonoBehaviour {
     }
 
     public void ButtonDownDecreaseNumberFunction() {
+        GameController.gameController.AudioButtonFunction(GameController.gameController.audio.audioButtonClick);
+
         if (countItem.itemAmmount > 0) {
             countItem.itemAmmount--;
             isBoundDecrease = true;

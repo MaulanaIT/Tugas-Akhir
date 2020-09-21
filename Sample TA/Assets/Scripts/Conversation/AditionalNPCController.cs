@@ -12,7 +12,8 @@ public class AditionalNPCController : MonoBehaviour {
     [System.Serializable]
     public class Conversation {
         public GameObject
-            panelConversation;
+            panelConversation, 
+            nameNPC;
 
         public Text
             textNameNPC,
@@ -35,6 +36,7 @@ public class AditionalNPCController : MonoBehaviour {
     public class Shop {
         public GameObject
             panelShop,
+            panelSell,
             panelListitem,
             panelItemShop,
             panelToolShop, 
@@ -71,15 +73,23 @@ public class AditionalNPCController : MonoBehaviour {
             conversation.textWordsNPC.text = conversation.stringConversationWords[conversation.currentConversationIndex];
 
             if (conversation.currentConversationIndex >= conversation.stringConversationWords.Length - 1) {
-                conversation.textNextConversation.text = "Close >>>";
+                conversation.textNextConversation.text = "Close";
             } else {
-                conversation.textNextConversation.text = "Next >>>";
+                conversation.textNextConversation.text = "Next";
             }
         } else {
             isTouch = false;
         }
 
-        if (isTouch == true && GameController.gameController.action.nameSelectedAction == "Conversations" && ActionController.actionController.isAction == true) {
+        if (isTouch == true) {
+            conversation.nameNPC.SetActive(true);
+        } else {
+            conversation.nameNPC.SetActive(false);
+        }
+
+        conversation.nameNPC.transform.LookAt(Camera.main.transform.position);
+
+        if (isTouch == true && GameController.gameController.action.nameSelectedAction == "Interact" && ActionController.actionController.isAction == true) {
             ActionController.actionController.conversationFunction.isConversation = true;
             conversation.panelConversation.SetActive(true);
         } else if (ActionController.actionController.conversationFunction.isConversation == false) {
@@ -89,6 +99,8 @@ public class AditionalNPCController : MonoBehaviour {
 
     //Fungsi button melanjutkan percakapan
     public void ButtonNextConversationFunction() {
+        GameController.gameController.AudioButtonFunction(GameController.gameController.audio.audioButtonClick);
+
         if (isTouch == true && shop.isShop == false) {
             if (conversation.currentConversationIndex >= conversation.stringConversationWords.Length - 1) {
                 conversation.panelConversation.SetActive(false);
@@ -117,10 +129,14 @@ public class AditionalNPCController : MonoBehaviour {
                 shop.panelListitem.SetActive(true);
 
                 if (shop.isItemShop == true) {
+                    ShopController.shopController.listSellItem.listItem = new GameObject[InventoryItemController.inventoryItemController.listItem.name.Length];
                     ShopController.shopController.isShopItem = true;
                     ShopController.shopController.isShopTool = false;
                     ShopController.shopController.isShopSeed = false;
 
+                    shop.panelListitem.GetComponent<ScrollRect>().content = shop.panelItemShop.GetComponent<RectTransform>();
+
+                    shop.panelSell.SetActive(true);
                     shop.panelItemShop.SetActive(true);
                     shop.panelToolShop.SetActive(false);
                     shop.panelSeedShop.SetActive(false);
@@ -129,10 +145,14 @@ public class AditionalNPCController : MonoBehaviour {
                         shop.panelSeedShopLocation[i].SetActive(false);
                     }
                 } else if (shop.isToolShop == true) {
+                    //ShopController.shopController.listSellItem.listItem = new GameObject[InventoryToolsController.inventoryToolsController.listTools.toolsName.Length];
                     ShopController.shopController.isShopItem = false;
                     ShopController.shopController.isShopTool = true;
                     ShopController.shopController.isShopSeed = false;
 
+                    shop.panelListitem.GetComponent<ScrollRect>().content = shop.panelToolShop.GetComponent<RectTransform>();
+
+                    shop.panelSell.SetActive(false);
                     shop.panelItemShop.SetActive(false);
                     shop.panelToolShop.SetActive(true);
                     shop.panelSeedShop.SetActive(false);
@@ -141,10 +161,18 @@ public class AditionalNPCController : MonoBehaviour {
                         shop.panelSeedShopLocation[i].SetActive(false);
                     }
                 } else if (shop.isSeedShop == true) {
+                    ShopController.shopController.listSellItem.listItem = new GameObject[InventorySeedsController.inventorySeedsController.listSeeds.seedsName.Length];
                     ShopController.shopController.isShopItem = false;
                     ShopController.shopController.isShopTool = false;
                     ShopController.shopController.isShopSeed = true;
 
+                    if (GameController.gameController.location == "Jawa") {
+                        shop.panelListitem.GetComponent<ScrollRect>().content = shop.panelSeedShop.transform.GetChild(0).GetComponent<RectTransform>();
+                    } else if (GameController.gameController.location == "Sumatera") {
+                        shop.panelListitem.GetComponent<ScrollRect>().content = shop.panelSeedShop.transform.GetChild(1).GetComponent<RectTransform>();
+                    }
+
+                    shop.panelSell.SetActive(true);
                     shop.panelItemShop.SetActive(false);
                     shop.panelToolShop.SetActive(false);
                     shop.panelSeedShop.SetActive(true);
@@ -158,8 +186,13 @@ public class AditionalNPCController : MonoBehaviour {
                     }
                 }
             } else {
+                for (int i = 0; i < ShopController.shopController.listSellItem.listItem.Length; i++) {
+                    Destroy(ShopController.shopController.listSellItem.listItem[i]);
+                }
+                ShopController.shopController.listSellItem.listItem = new GameObject[0];
                 ShopController.shopController.isShop = false;
                 shop.panelShop.SetActive(false);
+                shop.panelSell.SetActive(false);
                 shop.panelListitem.SetActive(false);
             }
         }

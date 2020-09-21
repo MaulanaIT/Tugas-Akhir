@@ -1,15 +1,12 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class ChangeActionController : MonoBehaviour {
 
-    public GameObject 
-        actionChat, 
-        actionTools, 
-        actionSeeds,
-        actionPick, 
-        actionHarvest;
+    public Text
+        textAction;
 
     public int 
         isAction = 0, 
@@ -22,51 +19,35 @@ public class ChangeActionController : MonoBehaviour {
     void Update() {
         switch (isAction) {
             case 0:
-                HideGameObject();
-                actionChat.SetActive(true);
-
-                GameController.gameController.action.nameSelectedAction = "Conversations";
+                textAction.text = "Interaksi";
+                GameController.gameController.action.nameSelectedAction = "Interact";
                 break;
             case 1:
-                HideGameObject();
-                actionTools.SetActive(true);
-
+                textAction.text = "Alat";
                 GameController.gameController.action.nameSelectedAction = "Tools";
                 break;
             case 2:
-                HideGameObject();
-                actionSeeds.SetActive(true);
-
+                textAction.text = "Tanam";
                 GameController.gameController.action.nameSelectedAction = "Seeds";
                 break;
             case 3:
-                HideGameObject();
-                actionPick.SetActive(true);
-
+                textAction.text = "Ambil";
                 GameController.gameController.action.nameSelectedAction = "Pick";
                 break;
             case 4:
-                HideGameObject();
-                actionHarvest.SetActive(true);
-
+                textAction.text = "Panen";
                 GameController.gameController.action.nameSelectedAction = "Harvest";
                 break;
         }
     }
 
     public void buttonChangeActionFunction() {
+        GameController.gameController.AudioButtonFunction(GameController.gameController.audio.audioButtonSelect);
+
         isAction++;
 
         if (isAction >= maxAction) {
             isAction = 0;
         }
-    }
-
-    public void HideGameObject() {
-        actionChat.SetActive(false);
-        actionTools.SetActive(false);
-        actionSeeds.SetActive(false);
-        actionPick.SetActive(false);
-        actionHarvest.SetActive(false);
     }
 }

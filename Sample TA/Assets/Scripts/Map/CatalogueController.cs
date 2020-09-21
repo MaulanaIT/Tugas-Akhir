@@ -11,19 +11,17 @@ public class CatalogueController : MonoBehaviour {
     public static CatalogueController 
         catalogueController;
 
-    public Animator 
-        animLocation, 
-        animItem, 
-        animMission;
-
     public GameObject 
         locationInformation, 
-        itemInformation, 
-        missionInformation;
+        listPlantInformation, 
+        questInformation;
 
     public GameObject
         itemPrefab, 
         itemParent;
+
+    public GameObject 
+        info;
 
     public GameObject[] 
         item, 
@@ -74,20 +72,32 @@ public class CatalogueController : MonoBehaviour {
     void Update() {
         for (int i = 0; i < listLocationName.Length; i++) {
             if (locationName == listLocationName[i]) {
-                if (itemInformation.activeSelf == true && checkList == true) {
+                if (listPlantInformation.activeSelf == true && checkList == true) {
                     for (int j = 0; j < listItem[i].itemName.Length; j++) {
                         item[j].gameObject.GetComponent<Text>().text = listItem[i].itemName[j];
                     }
 
                     checkList = false;
+
+                    break;
                 }
 
-                if (missionInformation.activeSelf == true && checkList == true) {
-                    for (int j = 0; j < listItem[i].itemName.Length; j++) {
+                if (questInformation.activeSelf == true && checkList == true) {
+                    for (int j = 0; j < listQuest[i].questName.Length; j++) {
                         quest[j].gameObject.GetComponent<Text>().text = listQuest[i].questName[j];
                     }
 
                     checkList = false;
+
+                    break;
+                }
+
+                if (locationInformation.activeSelf == true && checkList == true) {
+                    info.gameObject.GetComponent<Text>().text = locationDescription[i];
+
+                    checkList = false;
+
+                    break;
                 }
             }
         }
@@ -95,64 +105,60 @@ public class CatalogueController : MonoBehaviour {
         SaveGameFunction();
     }
 
-    public void ButtonLocationInformationFunction() {
+    public void ButtonInfoFunction() {
+        MapController.mapController.audioButton.Stop();
+        MapController.mapController.audioButton.clip = MapController.mapController.audioButtonSelect;
+        MapController.mapController.audioButton.Play();
+
         if (locationInformation.activeSelf == false) {
-            ResetBooleanInformationFunction();
-
-            isLocationShowing = true;
-
             locationInformation.SetActive(true);
-            itemInformation.SetActive(false);
-            missionInformation.SetActive(false);
 
-            animLocation.SetBool("Idle", false);
-            animLocation.SetBool("FadeOut", false);
-            animLocation.SetBool("FadeIn", true);
+            listPlantInformation.SetActive(false);
+            questInformation.SetActive(false);
+
+            checkList = true;
+        } else {
+            locationInformation.SetActive(false);
         }
     }
 
-    public void ButtonItemInformationFunction() {
-        if (itemInformation.activeSelf == false) {
-            ResetBooleanInformationFunction();
+    public void ButtonListPlantFunction() {
+        MapController.mapController.audioButton.Stop();
+        MapController.mapController.audioButton.clip = MapController.mapController.audioButtonSelect;
+        MapController.mapController.audioButton.Play();
 
-            isItemShowing = true;
-            checkList = true;
+        if (listPlantInformation.activeSelf == false) {
+            listPlantInformation.SetActive(true);
 
-            itemInformation.SetActive(true);
             locationInformation.SetActive(false);
-            missionInformation.SetActive(false);
+            questInformation.SetActive(false);
 
-            animItem.SetBool("Idle", false);
-            animItem.SetBool("FadeOut", false);
-            animItem.SetBool("FadeIn", true);
+            checkList = true;
+        } else {
+            listPlantInformation.SetActive(false);
         }
     }
 
-    public void ButtonMissionInformationFunction() {
-        if (missionInformation.activeSelf == false) {
-            ResetBooleanInformationFunction();
+    public void ButtonQuestFunction() {
+        MapController.mapController.audioButton.Stop();
+        MapController.mapController.audioButton.clip = MapController.mapController.audioButtonSelect;
+        MapController.mapController.audioButton.Play();
 
-            isMissionShowing = true;
-            checkList = true;
+        if (questInformation.activeSelf == false) {
+            questInformation.SetActive(true);
 
-            missionInformation.SetActive(true);
+            listPlantInformation.SetActive(false);
             locationInformation.SetActive(false);
-            itemInformation.SetActive(false);
 
-            animMission.SetBool("Idle", false);
-            animMission.SetBool("FadeOut", false);
-            animMission.SetBool("FadeIn", true);
+            checkList = true;
+        } else {
+            questInformation.SetActive(false);
         }
     }
 
     public void ButtonChoseLocationFunction() {
-        SceneManager.LoadScene(1);
-    }
-
-    public void ResetBooleanInformationFunction() {
-        isLocationShowing = false;
-        isItemShowing = false;
-        isMissionShowing = false;
+        LoadingController.loadingController.ButtonLoadSceneFunction(2);
+        MapController.mapController.GetComponent<AudioSource>().Stop();
     }
 
     public void SaveGameFunction() {

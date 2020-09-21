@@ -8,18 +8,17 @@ public class MapController : MonoBehaviour {
     public static MapController 
         mapController;
 
-    public Animator 
-        animJawa, 
-        animSumatra,
-        animBackgroundCatalogue, 
-        animCatalogueBook, 
-        animCatalogueBookContent;
+    public AudioSource 
+        audioButton;
+
+    public AudioClip 
+        audioButtonClick, 
+        audioButtonSelect;
 
     public GameObject 
         jawa, 
         sumatera, 
         catalogue, 
-        catalogueContent, 
         catalogueJawa, 
         catalogueSumatera;
 
@@ -43,22 +42,7 @@ public class MapController : MonoBehaviour {
     }
 
     void Update() {
-        if (isBookOpening == true && animCatalogueBook.GetCurrentAnimatorStateInfo(0).normalizedTime >= 1f && animCatalogueBook.GetCurrentAnimatorStateInfo(0).normalizedTime <= 1.2f) {
-            catalogueContent.SetActive(true);
 
-            animCatalogueBookContent.SetBool("Idle", false);
-            animCatalogueBookContent.SetBool("FadeIn", true);
-
-            isBookOpening = false;
-        }
-
-        if (isBookClosing == true && animCatalogueBook.GetCurrentAnimatorStateInfo(0).normalizedTime >= 1f && animCatalogueBook.GetCurrentAnimatorStateInfo(0).normalizedTime <= 1.2f) {
-            CatalogueController.catalogueController.itemInformation.SetActive(false);
-            CatalogueController.catalogueController.missionInformation.SetActive(false);
-            catalogue.SetActive(false);
-
-            isBookClosing = false;
-        }
     }
 
     public void ButtonHighlightJawaFunction() {
@@ -68,14 +52,6 @@ public class MapController : MonoBehaviour {
 
         catalogueJawa.SetActive(true);
         catalogueSumatera.SetActive(false);
-
-        animJawa.SetBool("Highlight", true);
-        animJawa.SetBool("Idle", false);
-    }
-
-    public void ButtonExitJawaFunction() {
-        animJawa.SetBool("Highlight", false);
-        animJawa.SetBool("Idle", true);
     }
 
     public void ButtonHighlightSumatraFunction() {
@@ -85,47 +61,25 @@ public class MapController : MonoBehaviour {
 
         catalogueJawa.SetActive(false);
         catalogueSumatera.SetActive(true);
-
-        animSumatra.SetBool("Highlight", true);
-        animSumatra.SetBool("Idle", false);
-    }
-
-    public void ButtonExitSumatraFunction() {
-        animSumatra.SetBool("Highlight", false);
-        animSumatra.SetBool("Idle", true);
     }
 
     public void ButtonOpenCatalogueFunction() {
+        audioButton.Stop();
+        audioButton.clip = audioButtonSelect;
+        audioButton.Play();
+
         catalogue.SetActive(true);
-        CatalogueController.catalogueController.locationInformation.SetActive(true);
-
-        animBackgroundCatalogue.SetBool("FadeIn", true);
-        animBackgroundCatalogue.SetBool("Idle", false);
-        animCatalogueBook.SetBool("OpenBook", true);
-        animCatalogueBook.SetBool("Idle", false);
-
-        CatalogueController.catalogueController.animLocation.SetBool("Idle", false);
-        CatalogueController.catalogueController.animLocation.SetBool("FadeOut", false);
-        CatalogueController.catalogueController.animLocation.SetBool("FadeIn", true);
-
-        isBookOpening = true;
-        CatalogueController.catalogueController.isLocationShowing = true;
     }
 
     public void ButtonCloseCatalogueFunction() {
-        if (animCatalogueBookContent.GetCurrentAnimatorStateInfo(0).normalizedTime >= 1) {
-            catalogueContent.SetActive(false);
-            CatalogueController.catalogueController.locationInformation.SetActive(false);
+        audioButton.Stop();
+        audioButton.clip = audioButtonSelect;
+        audioButton.Play();
 
-            animBackgroundCatalogue.SetBool("FadeIn", false);
-            animBackgroundCatalogue.SetBool("FadeOut", true);
-            animCatalogueBook.SetBool("OpenBook", false);
-            animCatalogueBook.SetBool("CloseBook", true);
+        CatalogueController.catalogueController.locationInformation.SetActive(false);
+        CatalogueController.catalogueController.listPlantInformation.SetActive(false);
+        CatalogueController.catalogueController.questInformation.SetActive(false);
 
-            isBookClosing = true;
-            CatalogueController.catalogueController.isLocationShowing = false;
-            CatalogueController.catalogueController.isItemShowing = false;
-            CatalogueController.catalogueController.isMissionShowing = false;
-        }
+        catalogue.SetActive(false);
     }
 }

@@ -56,13 +56,17 @@ public class ActionController : MonoBehaviour {
             itemDialogueBox;
 
         public Text 
-            textItemName;
-
-        public bool
-            isTouchItem;
+            textItemName, 
+            textItemCount;
 
         public string 
             itemName;
+
+        public float 
+            itemCount;
+
+        public bool
+            isTouchItem;
     }
     public PickUp pickUp = new PickUp();
 
@@ -87,7 +91,9 @@ public class ActionController : MonoBehaviour {
         isPicking = false,
         isHarvest = false,
         isHarvesting = false, 
-        isDigging = false;
+        isDigging = false, 
+        isSickling = false, 
+        isSickled = false;
 
     public float 
         cdAction = 0.5f;
@@ -114,6 +120,11 @@ public class ActionController : MonoBehaviour {
 
     void Update() {
         if (isAction == true) {
+
+            if (cdAction >= 0) {
+                cdAction -= Time.deltaTime;
+            }
+
             if (isHarvesting == true) {
                 actionDuration.nameAction.text = "Harvesting";
                 actionDuration.panelDuration.gameObject.SetActive(true);
@@ -121,14 +132,22 @@ public class ActionController : MonoBehaviour {
                 if (actionDuration.sliderDuration.value < actionDuration.sliderDuration.maxValue) {
                     actionDuration.sliderDuration.value += Time.deltaTime / actionDuration.duration;
 
+                    if (!GameController.gameController.audio.audioEffect.isPlaying) {
+                        GameController.gameController.audio.audioEffect.clip = GameController.gameController.audio.audioPlayerHarvesting;
+                        GameController.gameController.audio.audioEffect.Play();
+                    }
+
                     anim.SetBool("Harvesting", true);
                     anim.SetBool("Idle", false);
                 } else {
+                    GameController.gameController.audio.audioEffect.Stop();
+
                     actionDuration.panelDuration.gameObject.SetActive(false);
 
                     pickUp.itemDialogueBox.SetActive(true);
 
                     pickUp.textItemName.text = pickUp.itemName;
+                    pickUp.textItemCount.text = "x" + pickUp.itemCount;
                     pickUp.itemDialogueBox.SetActive(true);
 
                     actionDuration.sliderDuration.value = 0;
@@ -143,8 +162,14 @@ public class ActionController : MonoBehaviour {
                     for (int i = 0; i < QuestController.questController.quest[indexLocation].questItem.Length; i++) {
                         if (pickUp.itemName == QuestController.questController.quest[indexLocation].questItem[i]) {
                             QuestController.questController.quest[indexLocation].questProgress[i]++;
+                            SaveController.saveController.isSaveQuest = true;
                             break;
                         }
+                    }
+
+                    if (cdAction <= 0) {
+                        cdAction = 0.5f;
+                        isAction = false;
                     }
                 }
             } else if (isDigging == true) {
@@ -154,12 +179,19 @@ public class ActionController : MonoBehaviour {
                 if (actionDuration.sliderDuration.value < actionDuration.sliderDuration.maxValue) {
                     actionDuration.sliderDuration.value += Time.deltaTime / actionDuration.duration;
 
+                    if (!GameController.gameController.audio.audioEffect.isPlaying) {
+                        GameController.gameController.audio.audioEffect.clip = GameController.gameController.audio.audioPlayerDigging;
+                        GameController.gameController.audio.audioEffect.Play();
+                    }
+
                     anim.SetBool("Digging", true);
                     anim.SetBool("Idle", false);
                 } else {
+                    GameController.gameController.audio.audioEffect.Stop();
+
                     actionDuration.panelDuration.gameObject.SetActive(false);
 
-                    GameObject obj = Instantiate(prefebDigObject, new Vector3(xPosition, 1.517f, zPosition), Quaternion.identity);
+                    GameObject obj = Instantiate(prefebDigObject, new Vector3(xPosition, 1.53f, zPosition), Quaternion.identity);
 
                     actionDuration.sliderDuration.value = 0;
 
@@ -167,19 +199,56 @@ public class ActionController : MonoBehaviour {
                     anim.SetBool("Idle", true);
 
                     isDigging = false;
+
+                    if (cdAction <= 0) {
+                        cdAction = 0.5f;
+                        isAction = false;
+                        SaveController.saveController.isAction = true;
+                    }
                 }
-            } else if (conversationFunction.isConversation == true) {
+            } else if (isSickling == true) {
+                actionDuration.nameAction.text = "Sickling";
+                actionDuration.panelDuration.gameObject.SetActive(true);
+
+                if (actionDuration.sliderDuration.value < actionDuration.sliderDuration.maxValue) {
+                    actionDuration.sliderDuration.value += Time.deltaTime / actionDuration.duration;
+
+                    if (!GameController.gameController.audio.audioEffect.isPlaying) {
+                        GameController.gameController.audio.audioEffect.clip = GameController.gameController.audio.audioPlayerHarvesting;
+                        GameController.gameController.audio.audioEffect.Play();
+                    }
+
+                    anim.SetBool("Sickling", true);
+                    anim.SetBool("Idle", false);
+                } else {
+                    GameController.gameController.audio.audioEffect.Stop();
+
+                    actionDuration.panelDuration.gameObject.SetActive(false);
+
+                    actionDuration.sliderDuration.value = 0;
+
+                    anim.SetBool("Sickling", false);
+                    anim.SetBool("Idle", true);
+
+                    isSickling = false;
+                    isSickled = true;
+
+                    if (cdAction <= 0) {
+                        cdAction = 0.5f;
+                        isAction = false;
+                        SaveController.saveController.isAction = true;
+                    }
+                }
+            } else if (isHarvesting == false && isDigging == false && conversationFunction.isConversation == true) {
                 conversationFunction.conversationCamera.SetActive(true);
                 conversationFunction.conversation.SetActive(true);
                 conversationFunction.player.SetActive(false);
                 conversationFunction.ui.SetActive(false);
-            } else {
+            } else if (isHarvesting == false && isDigging == false && conversationFunction.isConversation == false) {
                 conversationFunction.conversationCamera.SetActive(false);
                 conversationFunction.conversation.SetActive(false);
                 conversationFunction.player.SetActive(true);
                 conversationFunction.ui.SetActive(true);
-
-                cdAction -= Time.deltaTime;
 
                 if (cdAction <= 0) {
                     cdAction = 0.5f;
@@ -191,6 +260,8 @@ public class ActionController : MonoBehaviour {
 
     public void ButtonActionFunction() {
         if (isAction == false) {
+            GameController.gameController.AudioButtonFunction(GameController.gameController.audio.audioButtonSelect);
+
             if (GameController.gameController.action.nameSelectedAction == "Tools") {
                 xRounded = Mathf.Round(actionPoint.transform.position.x);
                 zRounded = Mathf.Round(actionPoint.transform.position.z);
@@ -219,10 +290,11 @@ public class ActionController : MonoBehaviour {
 
                     isDigging = true;
                     isAction = true;
-                } else if (GameController.gameController.action.nameSelectedTools == "Sickle") {
+                } else if (GameController.gameController.action.nameSelectedTools == "Sickle" && PlayerController.playerController.farm.digStatus == true && isHarvest == true) {
+                    isSickling = true;
                     isAction = true;
                 }
-            } else if (GameController.gameController.action.nameSelectedAction == "Seeds" && SelectSeedsController.selectSeedsController.selectSeeds.currentSlotStatus == true) {
+            } else if (GameController.gameController.action.nameSelectedAction == "Seeds" && GameController.gameController.action.nameSelectedSeeds != null && GameController.gameController.action.nameSelectedSeeds != "") {
                 xRounded = Mathf.Round(playerPoint.transform.position.x);
                 zRounded = Mathf.Round(playerPoint.transform.position.z);
                 xPosition = playerPoint.transform.position.x;
@@ -251,8 +323,9 @@ public class ActionController : MonoBehaviour {
                     GameObject obj = Instantiate(prefebSeedObject, new Vector3(xPosition, 1.517f, zPosition), Quaternion.identity);
 
                     isAction = true;
+                    SaveController.saveController.isAction = true;
                 }
-            } else if (GameController.gameController.action.nameSelectedAction == "Conversations") {
+            } else if (GameController.gameController.action.nameSelectedAction == "Interact") {
 
                 isAction = true;
             } else if (GameController.gameController.action.nameSelectedAction == "Pick" && pickUp.isTouchItem == true) {

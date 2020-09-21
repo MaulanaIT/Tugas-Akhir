@@ -13,11 +13,11 @@ public class ClockController : MonoBehaviour {
         textDay, 
         textHours, 
         textMinutes, 
-        //textPeriods, 
         textMonth;
 
-    public float 
-        timeCooldown;
+    public float
+        timeCooldown, 
+        resetTime;
 
     public string 
         month, 
@@ -41,22 +41,24 @@ public class ClockController : MonoBehaviour {
         month = textMonth.text;
         GameController.gameController.clock.day = textDay.text;
         GameController.gameController.clock.month = textMonth.text;
+
+        resetTime = timeCooldown;
     }
 
     void Update() {
         timeCooldown -= Time.deltaTime;
 
         if (timeCooldown <= 0) {
+            timeCooldown += resetTime;
             minute += 10;
-            timeCooldown = 1f;
         }
 
         if (minute >= 60) {
             hour++;
-            minute = 0;
+            minute -= 60;
         }
 
-        if (hour >= 23) {
+        if (hour > 23) {
             switch (day) {
                 case "SEN":
                     day = "SEL";
@@ -82,9 +84,10 @@ public class ClockController : MonoBehaviour {
             }
 
             textDay.text = day;
+            date++;
 
             if (minute >= 0) {
-                hour = 0;
+                hour -= 24;
             }
         }
 
@@ -128,7 +131,7 @@ public class ClockController : MonoBehaviour {
                     break;
             }
 
-            date = 1;
+            date -= 30;
             textMonth.text = month;
         }
 

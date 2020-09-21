@@ -44,6 +44,8 @@ public class InventoryController : MonoBehaviour {
 
     public void ButtonOpenInventoryItemFunction() {
         if (InventoryItemController.inventoryItemController.isInventory == true) {
+            GameController.gameController.AudioButtonFunction(GameController.gameController.audio.audioButtonSelect);
+
             isItem = true;
             isTool = false;
             isSeed = false;
@@ -52,14 +54,16 @@ public class InventoryController : MonoBehaviour {
             setPanel.panelInventoryTool.SetActive(false);
             setPanel.panelInventorySeed.SetActive(false);
 
-            setPanel.buttonInventoryItem.GetComponent<Image>().color = new Color32(214, 179, 130, 150);
-            setPanel.buttonInventoryTool.GetComponent<Image>().color = new Color32(74, 56, 31, 255);
-            setPanel.buttonInventorySeed.GetComponent<Image>().color = new Color32(74, 56, 31, 255);
+            setPanel.buttonInventoryItem.GetComponent<Image>().color = new Color32(150, 150, 150, 255);
+            setPanel.buttonInventoryTool.GetComponent<Image>().color = new Color32(255, 255, 255, 255);
+            setPanel.buttonInventorySeed.GetComponent<Image>().color = new Color32(255, 255, 255, 255);
         }
     }
 
     public void ButtonOpenInventoryToolFunction() {
         if (InventoryItemController.inventoryItemController.isInventory == true) {
+            GameController.gameController.AudioButtonFunction(GameController.gameController.audio.audioButtonSelect);
+
             isItem = false;
             isTool = true;
             isSeed = false;
@@ -68,14 +72,16 @@ public class InventoryController : MonoBehaviour {
             setPanel.panelInventoryTool.SetActive(true);
             setPanel.panelInventorySeed.SetActive(false);
 
-            setPanel.buttonInventoryItem.GetComponent<Image>().color = new Color32(74, 56, 31, 255);
-            setPanel.buttonInventoryTool.GetComponent<Image>().color = new Color32(214, 179, 130, 150);
-            setPanel.buttonInventorySeed.GetComponent<Image>().color = new Color32(74, 56, 31, 255);
+            setPanel.buttonInventoryItem.GetComponent<Image>().color = new Color32(255, 255, 255, 255);
+            setPanel.buttonInventoryTool.GetComponent<Image>().color = new Color32(150, 150, 150, 255);
+            setPanel.buttonInventorySeed.GetComponent<Image>().color = new Color32(255, 255, 255, 255);
         }
     }
 
     public void ButtonOpenInventorySeedFunction() {
         if (InventoryItemController.inventoryItemController.isInventory == true) {
+            GameController.gameController.AudioButtonFunction(GameController.gameController.audio.audioButtonSelect);
+
             isItem = false;
             isTool = false;
             isSeed = true;
@@ -84,9 +90,9 @@ public class InventoryController : MonoBehaviour {
             setPanel.panelInventoryTool.SetActive(false);
             setPanel.panelInventorySeed.SetActive(true);
 
-            setPanel.buttonInventoryItem.GetComponent<Image>().color = new Color32(74, 56, 31, 255);
-            setPanel.buttonInventoryTool.GetComponent<Image>().color = new Color32(74, 56, 31, 255);
-            setPanel.buttonInventorySeed.GetComponent<Image>().color = new Color32(214, 179, 130, 150);
+            setPanel.buttonInventoryItem.GetComponent<Image>().color = new Color32(255, 255, 255, 255);
+            setPanel.buttonInventoryTool.GetComponent<Image>().color = new Color32(255, 255, 255, 255);
+            setPanel.buttonInventorySeed.GetComponent<Image>().color = new Color32(150, 150, 150, 255);
         }
     }
 }
